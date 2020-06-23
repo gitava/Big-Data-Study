@@ -1,0 +1,13 @@
+org\dataguru\mr\kpi\KPIPV$KPIPVReducer.class
+org\dataguru\mr\kpi\KPIPV$KPIPVMapper.class
+org\dataguru\mr\kpi\KPIPV.class
+org\dataguru\mr\kpi\KPIIP$KPIIPMapper.class
+org\dataguru\mr\kpi\KPI.class
+org\dataguru\hadoop\WordCount$IntSumReducer.class
+org\dataguru\mr\kpi\KPIRefSiteAndIPNum$KPIREFReducer.class
+org\dataguru\mr\kpi\KPIRefSiteAndIPNum.class
+org\dataguru\hadoop\WordCount.class
+org\dataguru\mr\kpi\KPIIP$KPIIPReducer.class
+org\dataguru\hadoop\WordCount$TokenizerMapper.class
+org\dataguru\mr\kpi\KPIRefSiteAndIPNum$KPIREFMapper.class
+org\dataguru\mr\kpi\KPIIP.class

@@ -25,7 +25,6 @@ public class KPIPV {
 		private IntWritable one = new IntWritable(1);
 		private Text word = new Text();
 
-		@Override
 		public void map(Object key, Text value,
 				OutputCollector<Text, IntWritable> output, Reporter reporter)
 				throws IOException {
@@ -41,7 +40,6 @@ public class KPIPV {
 			Reducer<Text, IntWritable, Text, IntWritable> {
 		private IntWritable result = new IntWritable();
 
-		@Override
 		public void reduce(Text key, Iterator<IntWritable> values,
 				OutputCollector<Text, IntWritable> output, Reporter reporter)
 				throws IOException {
@@ -55,8 +53,8 @@ public class KPIPV {
 	}
 
 	public static void main(String[] args) throws Exception {
-		String input = "hdfs://192.168.0.110:9000/input/access.log";
-		String output = "hdfs://192.168.0.110:9000/user/hdfs/pv";
+		String input = "hdfs://192.168.33.101:9000/input/access.log";
+		String output = "hdfs://192.168.33.101:9000/user/hdfs/pv";
 
 		JobConf conf = new JobConf(KPIPV.class);
 		conf.setJobName("KPIPV");

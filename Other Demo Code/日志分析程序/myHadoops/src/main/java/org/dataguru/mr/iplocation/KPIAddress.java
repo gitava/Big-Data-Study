@@ -36,14 +36,11 @@ public class KPIAddress {
 
 	public static int ipnum = 0;
 
-	public static class KPIAddressMapper extends MapReduceBase implements
-			Mapper<Object, Text, Text, IntWritable> {
+	public static class KPIAddressMapper extends MapReduceBase implements Mapper<Object, Text, Text, IntWritable> {
 		private IntWritable one = new IntWritable(1);
 		private Text ips = new Text();
 
-		@Override
-		public void map(Object key, Text value,
-				OutputCollector<Text, IntWritable> output, Reporter reporter)
+		public void map(Object key, Text value, OutputCollector<Text, IntWritable> output, Reporter reporter)
 				throws IOException {
 			KPI kpi = KPI.filterIPs(value.toString());
 			if (kpi.isValid()) {
@@ -54,15 +51,12 @@ public class KPIAddress {
 		}
 	}
 
-	public static class KPIAddressReducer extends MapReduceBase implements
-			Reducer<Text, IntWritable, Text, Text> {
+	public static class KPIAddressReducer extends MapReduceBase implements Reducer<Text, IntWritable, Text, Text> {
 
 		IPSeeker ipseeker = IPSeeker.getInstance();
 
-		@Override
-		public void reduce(Text key, Iterator<IntWritable> values,
-				OutputCollector<Text, Text> output, Reporter reporter)
-				throws IOException {
+		public void reduce(Text key, Iterator<IntWritable> values, OutputCollector<Text, Text> output,
+				Reporter reporter) throws IOException {
 			// ip to address
 			String address = ipseeker.getAddress(key.toString());
 			int sum = 0;
@@ -74,11 +68,9 @@ public class KPIAddress {
 		}
 	}
 
-	public static class KPIAddressMapper2 extends MapReduceBase implements
-			Mapper<Object, Text, Text, IntWritable> {
-		@Override
-		public void map(Object key, Text value,
-				OutputCollector<Text, IntWritable> output, Reporter reporter)
+	public static class KPIAddressMapper2 extends MapReduceBase implements Mapper<Object, Text, Text, IntWritable> {
+
+		public void map(Object key, Text value, OutputCollector<Text, IntWritable> output, Reporter reporter)
 				throws IOException {
 			String line = value.toString();
 			StringTokenizer tokenizer = new StringTokenizer(line);
@@ -101,14 +93,12 @@ public class KPIAddress {
 
 		}
 	}
-	public static class KPIAddressReducer2 extends MapReduceBase implements
-			Reducer<Text, IntWritable, Text, Text> {
+
+	public static class KPIAddressReducer2 extends MapReduceBase implements Reducer<Text, IntWritable, Text, Text> {
 		IPSeeker ipseeker = IPSeeker.getInstance();
 
-		@Override
-		public void reduce(Text key, Iterator<IntWritable> values,
-				OutputCollector<Text, Text> output, Reporter reporter)
-				throws IOException {
+		public void reduce(Text key, Iterator<IntWritable> values, OutputCollector<Text, Text> output,
+				Reporter reporter) throws IOException {
 			int sum = 0;
 			while (values.hasNext()) {
 				sum = sum + values.next().get();
@@ -120,10 +110,10 @@ public class KPIAddress {
 	}
 
 	public static void main(String[] args) throws Exception {
-		String input = "hdfs://192.168.0.110:9000/input/access.log";
-		String output = "hdfs://192.168.0.110:9000/user/hdfs/address";
+		String input = "hdfs://192.168.33.101:9000/input/access.log";
+		String output = "hdfs://192.168.33.101:9000/user/hdfs/address";
 
-		Path tempDir = new Path("hdfs://192.168.0.110:9000/temp");
+		Path tempDir = new Path("hdfs://192.168.33.101:9000/temp");
 
 		JobConf conf = new JobConf(KPIAddress.class);
 		conf.setJobName("KPIAddress");

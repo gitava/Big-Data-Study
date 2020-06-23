@@ -2,7 +2,16 @@ package org.dataguru.mr.iplocation;
 
 import java.io.UnsupportedEncodingException;
 
-
+/*
+ * 用来解读数据库： /myHadoops/src/main/resources/qqwry.dat
+ * 
+ * 纯真IP地址数据库qqwry.dat解析
+ * ip地址数据库，在现在互联网时代非常有用，比如大型网站的用户安全保护系统，就常常会根据ip反查的信息，甄别账号的一些不安全登录行为，比如跨区域登录问题等。ip其实关联了一些有信息，比如区域，所在运营商，一些收录全的，甚至包括具体经纬度，像百度的IP定位api就比较全。
+ * 下面来介绍一下“ 纯真IP地址数据库qqwry”的格式以及解析
+ * 以下是“ 纯真IP地址数据库qqwry”官网对其的介绍。
+ * 纯真版IP地址数据库是当前网络上最权威、地址最精确、IP记录以及网吧数据最多的IP地址数据库。收集了包括中国电信、中国移动、中国联通、铁通、长城宽带等各 ISP 的最新准确 IP 地址数据。通过大家的共同努力打造一个没有未知数据，没有错误数据的QQ IP。IP数据库每5天更新一次，请大家定期更新最新的IP数据库！
+ * [https://www.jianshu.com/p/01d3c19738c2]
+ */
 public class Utils {
     /**
      * 从ip的字符串形式得到字节数组形式

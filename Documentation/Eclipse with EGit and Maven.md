@@ -1,4 +1,4 @@
-#Eclipse with EGit and Maven
+### Eclipse with EGit and Maven
 
 1. Install Eclipse-Git plugin
 

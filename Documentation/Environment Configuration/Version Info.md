@@ -13,12 +13,12 @@
 6. Hadoop: 2.9.2 (2018 Nov 19) （Book：2.5.1）
 
 7. JDK：（Book： Mac 1.7.0_25）
-    * jdk-7u80-linux-x64
+   * jdk-7u80-linux-x64
     
 8. Ant：1.10.8
 
 9. Eclipse 2020
-    * ZooKeeper Plugin 
+   * ZooKeeper Plugin 
     
 10. Maven 3.6.3： https://downloads.apache.org/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
 

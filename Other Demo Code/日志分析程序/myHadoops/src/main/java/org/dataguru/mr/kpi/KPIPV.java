@@ -54,7 +54,7 @@ public class KPIPV {
 
 	public static void main(String[] args) throws Exception {
 		String input = "hdfs://192.168.33.101:9000/input/access.log";
-		String output = "hdfs://192.168.33.101:9000/user/hdfs/pv";
+		String output = "hdfs://192.168.33.101:9000/output/hdfs/pv";
 
 		JobConf conf = new JobConf(KPIPV.class);
 		conf.setJobName("KPIPV");

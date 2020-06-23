@@ -23,6 +23,8 @@ package org.dataguru.mr.iplocation;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -31,22 +33,22 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
- * * ÓÃÀ´¶ÁÈ¡qqwry.datÎÄ¼ş£¬ÒÔ¸ù¾İip»ñµÃºÃÓÑÎ»ÖÃ£¬qqwry.datµÄ¸ñÊ½ÊÇ Ò». ÎÄ¼şÍ·£¬¹²8×Ö½Ú 1. µÚÒ»¸öÆğÊ¼IPµÄ¾ø¶ÔÆ«ÒÆ£¬ 4×Ö½Ú
- * 2. ×îºóÒ»¸öÆğÊ¼IPµÄ¾ø¶ÔÆ«ÒÆ£¬ 4×Ö½Ú ¶ş. "½áÊøµØÖ·/¹ú¼Ò/ÇøÓò"¼ÇÂ¼Çø ËÄ×Ö½ÚipµØÖ·ºó¸úµÄÃ¿Ò»Ìõ¼ÇÂ¼·Ö³ÉÁ½¸ö²¿·Ö 1. ¹ú¼Ò¼ÇÂ¼ 2.
- * µØÇø¼ÇÂ¼ µ«ÊÇµØÇø¼ÇÂ¼ÊÇ²»Ò»¶¨ÓĞµÄ¡£¶øÇÒ¹ú¼Ò¼ÇÂ¼ºÍµØÇø¼ÇÂ¼¶¼ÓĞÁ½ÖÖĞÎÊ½ 1. ÒÔ0½áÊøµÄ×Ö·û´® 2. 4¸ö×Ö½Ú£¬Ò»¸ö×Ö½Ú¿ÉÄÜÎª0x1»ò0x2 a.
- * Îª0x1Ê±£¬±íÊ¾ÔÚ¾ø¶ÔÆ«ÒÆºó»¹¸ú×ÅÒ»¸öÇøÓòµÄ¼ÇÂ¼£¬×¢ÒâÊÇ¾ø¶ÔÆ«ÒÆÖ®ºó£¬¶ø²»ÊÇÕâËÄ¸ö×Ö½ÚÖ®ºó b. Îª0x2Ê±£¬±íÊ¾ÔÚ¾ø¶ÔÆ«ÒÆºóÃ»ÓĞÇøÓò¼ÇÂ¼
- * ²»¹ÜÎª0x1»¹ÊÇ0x2£¬ºóÈı¸ö×Ö½Ú¶¼ÊÇÊµ¼Ê¹ú¼ÒÃûµÄÎÄ¼şÄÚ¾ø¶ÔÆ«ÒÆ
- * Èç¹ûÊÇµØÇø¼ÇÂ¼£¬0x1ºÍ0x2µÄº¬Òå²»Ã÷£¬µ«ÊÇÈç¹û³öÏÖÕâÁ½¸ö×Ö½Ú£¬Ò²¿Ï¶¨ÊÇ¸ú×Å3¸ö×Ö½ÚÆ«ÒÆ£¬Èç¹û²»ÊÇ ÔòÎª0½áÎ²×Ö·û´® Èı.
- * "ÆğÊ¼µØÖ·/½áÊøµØÖ·Æ«ÒÆ"¼ÇÂ¼Çø 1. Ã¿Ìõ¼ÇÂ¼7×Ö½Ú£¬°´ÕÕÆğÊ¼µØÖ·´ÓĞ¡µ½´óÅÅÁĞ a. ÆğÊ¼IPµØÖ·£¬4×Ö½Ú b. ½áÊøipµØÖ·µÄ¾ø¶ÔÆ«ÒÆ£¬3×Ö½Ú
+ * * ç”¨æ¥è¯»å–qqwry.datæ–‡ä»¶ï¼Œä»¥æ ¹æ®ipè·å¾—å¥½å‹ä½ç½®ï¼Œqqwry.datçš„æ ¼å¼æ˜¯ ä¸€. æ–‡ä»¶å¤´ï¼Œå…±8å­—èŠ‚ 1. ç¬¬ä¸€ä¸ªèµ·å§‹IPçš„ç»å¯¹åç§»ï¼Œ 4å­—èŠ‚
+ * 2. æœ€åä¸€ä¸ªèµ·å§‹IPçš„ç»å¯¹åç§»ï¼Œ 4å­—èŠ‚ äºŒ. "ç»“æŸåœ°å€/å›½å®¶/åŒºåŸŸ"è®°å½•åŒº å››å­—èŠ‚ipåœ°å€åè·Ÿçš„æ¯ä¸€æ¡è®°å½•åˆ†æˆä¸¤ä¸ªéƒ¨åˆ† 1. å›½å®¶è®°å½• 2.
+ * åœ°åŒºè®°å½• ä½†æ˜¯åœ°åŒºè®°å½•æ˜¯ä¸ä¸€å®šæœ‰çš„ã€‚è€Œä¸”å›½å®¶è®°å½•å’Œåœ°åŒºè®°å½•éƒ½æœ‰ä¸¤ç§å½¢å¼ 1. ä»¥0ç»“æŸçš„å­—ç¬¦ä¸² 2. 4ä¸ªå­—èŠ‚ï¼Œä¸€ä¸ªå­—èŠ‚å¯èƒ½ä¸º0x1æˆ–0x2 a.
+ * ä¸º0x1æ—¶ï¼Œè¡¨ç¤ºåœ¨ç»å¯¹åç§»åè¿˜è·Ÿç€ä¸€ä¸ªåŒºåŸŸçš„è®°å½•ï¼Œæ³¨æ„æ˜¯ç»å¯¹åç§»ä¹‹åï¼Œè€Œä¸æ˜¯è¿™å››ä¸ªå­—èŠ‚ä¹‹å b. ä¸º0x2æ—¶ï¼Œè¡¨ç¤ºåœ¨ç»å¯¹åç§»åæ²¡æœ‰åŒºåŸŸè®°å½•
+ * ä¸ç®¡ä¸º0x1è¿˜æ˜¯0x2ï¼Œåä¸‰ä¸ªå­—èŠ‚éƒ½æ˜¯å®é™…å›½å®¶åçš„æ–‡ä»¶å†…ç»å¯¹åç§»
+ * å¦‚æœæ˜¯åœ°åŒºè®°å½•ï¼Œ0x1å’Œ0x2çš„å«ä¹‰ä¸æ˜ï¼Œä½†æ˜¯å¦‚æœå‡ºç°è¿™ä¸¤ä¸ªå­—èŠ‚ï¼Œä¹Ÿè‚¯å®šæ˜¯è·Ÿç€3ä¸ªå­—èŠ‚åç§»ï¼Œå¦‚æœä¸æ˜¯ åˆ™ä¸º0ç»“å°¾å­—ç¬¦ä¸² ä¸‰.
+ * "èµ·å§‹åœ°å€/ç»“æŸåœ°å€åç§»"è®°å½•åŒº 1. æ¯æ¡è®°å½•7å­—èŠ‚ï¼ŒæŒ‰ç…§èµ·å§‹åœ°å€ä»å°åˆ°å¤§æ’åˆ— a. èµ·å§‹IPåœ°å€ï¼Œ4å­—èŠ‚ b. ç»“æŸipåœ°å€çš„ç»å¯¹åç§»ï¼Œ3å­—èŠ‚
  * 
- * ×¢Òâ£¬Õâ¸öÎÄ¼şÀïµÄipµØÖ·ºÍËùÓĞµÄÆ«ÒÆÁ¿¾ù²ÉÓÃlittle-endian¸ñÊ½£¬¶øjavaÊÇ²ÉÓÃ big-endian¸ñÊ½µÄ£¬Òª×¢Òâ×ª»»
+ * æ³¨æ„ï¼Œè¿™ä¸ªæ–‡ä»¶é‡Œçš„ipåœ°å€å’Œæ‰€æœ‰çš„åç§»é‡å‡é‡‡ç”¨little-endianæ ¼å¼ï¼Œè€Œjavaæ˜¯é‡‡ç”¨ big-endianæ ¼å¼çš„ï¼Œè¦æ³¨æ„è½¬æ¢
  * 
  * 
- * @author ÂíÈô„Â
+ * @author é©¬è‹¥åŠ¼
  */
 public class IPSeeker {
 	/**
-	 * * ÓÃÀ´·â×°ipÏà¹ØĞÅÏ¢£¬Ä¿Ç°Ö»ÓĞÁ½¸ö×Ö¶Î£¬ipËùÔÚµÄ¹ú¼ÒºÍµØÇø
+	 * * ç”¨æ¥å°è£…ipç›¸å…³ä¿¡æ¯ï¼Œç›®å‰åªæœ‰ä¸¤ä¸ªå­—æ®µï¼Œipæ‰€åœ¨çš„å›½å®¶å’Œåœ°åŒº
 	 * 
 	 * 
 	 * @author swallow
@@ -67,32 +69,49 @@ public class IPSeeker {
 		}
 	}
 
-	private static final String IP_FILE = IPSeeker.class
-			.getResource("/qqwry.dat").toString().substring(5);
+//	private static final String IP_FILE = IPSeeker.class.getResource("/qqwry.dat")
+//			.toString().substring(5);
 
-	// Ò»Ğ©¹Ì¶¨³£Á¿£¬±ÈÈç¼ÇÂ¼³¤¶ÈµÈµÈ
+
+	//In order to show path with Chinese characters correctly.
+	private static String IP_FILE = IPSeeker.class.getResource("/qqwry.dat")
+			.toString().substring(5);
+	
+	static {
+		URI uri;
+		try {
+			IP_FILE = new URI(IP_FILE).getPath();
+			System.out.println("ä¸­æ–‡ç‰ˆæœ¬è·¯å¾„ï¼š "+ IP_FILE);
+			//ä¸­æ–‡ç‰ˆæœ¬è·¯å¾„ï¼š.../myHadoops/target/classes/qqwry.dat
+
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	// ä¸€äº›å›ºå®šå¸¸é‡ï¼Œæ¯”å¦‚è®°å½•é•¿åº¦ç­‰ç­‰
 	private static final int IP_RECORD_LENGTH = 7;
 	private static final byte AREA_FOLLOWED = 0x01;
 	private static final byte NO_AREA = 0x2;
 
-	// ÓÃÀ´×öÎªcache£¬²éÑ¯Ò»¸öipÊ±Ê×ÏÈ²é¿´cache£¬ÒÔ¼õÉÙ²»±ØÒªµÄÖØ¸´²éÕÒ
+	// ç”¨æ¥åšä¸ºcacheï¼ŒæŸ¥è¯¢ä¸€ä¸ªipæ—¶é¦–å…ˆæŸ¥çœ‹cacheï¼Œä»¥å‡å°‘ä¸å¿…è¦çš„é‡å¤æŸ¥æ‰¾
 	private Hashtable ipCache;
-	// Ëæ»úÎÄ¼ş·ÃÎÊÀà
+	// éšæœºæ–‡ä»¶è®¿é—®ç±»
 	private RandomAccessFile ipFile;
-	// ÄÚ´æÓ³ÉäÎÄ¼ş
+	// å†…å­˜æ˜ å°„æ–‡ä»¶
 	private MappedByteBuffer mbb;
-	// µ¥Ò»Ä£Ê½ÊµÀı
+	// å•ä¸€æ¨¡å¼å®ä¾‹
 	private static IPSeeker instance = new IPSeeker();
-	// ÆğÊ¼µØÇøµÄ¿ªÊ¼ºÍ½áÊøµÄ¾ø¶ÔÆ«ÒÆ
+	// èµ·å§‹åœ°åŒºçš„å¼€å§‹å’Œç»“æŸçš„ç»å¯¹åç§»
 	private long ipBegin, ipEnd;
-	// ÎªÌá¸ßĞ§ÂÊ¶ø²ÉÓÃµÄÁÙÊ±±äÁ¿
+	// ä¸ºæé«˜æ•ˆç‡è€Œé‡‡ç”¨çš„ä¸´æ—¶å˜é‡
 	private IPLocation loc;
 	private byte[] buf;
 	private byte[] b4;
 	private byte[] b3;
 
 	/**
-	 * Ë½ÓĞ¹¹Ôìº¯Êı
+	 * ç§æœ‰æ„é€ å‡½æ•°
 	 */
 	private IPSeeker() {
 		ipCache = new Hashtable();
@@ -103,14 +122,13 @@ public class IPSeeker {
 		try {
 			ipFile = new RandomAccessFile(IP_FILE, "r");
 		} catch (FileNotFoundException e) {
-			System.out.println(IPSeeker.class.getResource("/qqwry.dat")
-					.toString());
+			System.out.println(IPSeeker.class.getResource("/qqwry.dat").toString());
 			System.out.println(IP_FILE);
-			System.out.println("IPµØÖ·ĞÅÏ¢ÎÄ¼şÃ»ÓĞÕÒµ½£¬IPÏÔÊ¾¹¦ÄÜ½«ÎŞ·¨Ê¹ÓÃ");
+			System.out.println("IPåœ°å€ä¿¡æ¯æ–‡ä»¶æ²¡æœ‰æ‰¾åˆ°ï¼ŒIPæ˜¾ç¤ºåŠŸèƒ½å°†æ— æ³•ä½¿ç”¨");
 			ipFile = null;
 
 		}
-		// Èç¹û´ò¿ªÎÄ¼ş³É¹¦£¬¶ÁÈ¡ÎÄ¼şÍ·ĞÅÏ¢
+		// å¦‚æœæ‰“å¼€æ–‡ä»¶æˆåŠŸï¼Œè¯»å–æ–‡ä»¶å¤´ä¿¡æ¯
 		if (ipFile != null) {
 			try {
 				ipBegin = readLong4(0);
@@ -120,47 +138,46 @@ public class IPSeeker {
 					ipFile = null;
 				}
 			} catch (IOException e) {
-				System.out.println("IPµØÖ·ĞÅÏ¢ÎÄ¼ş¸ñÊ½ÓĞ´íÎó£¬IPÏÔÊ¾¹¦ÄÜ½«ÎŞ·¨Ê¹ÓÃ");
+				System.out.println("IPåœ°å€ä¿¡æ¯æ–‡ä»¶æ ¼å¼æœ‰é”™è¯¯ï¼ŒIPæ˜¾ç¤ºåŠŸèƒ½å°†æ— æ³•ä½¿ç”¨");
 				ipFile = null;
 			}
 		}
 	}
 
 	/**
-	 * @return µ¥Ò»ÊµÀı
+	 * @return å•ä¸€å®ä¾‹
 	 */
 	public static IPSeeker getInstance() {
 		return instance;
 	}
 
 	/**
-	 * ¸ø¶¨Ò»¸öµØµãµÄ²»ÍêÈ«Ãû×Ö£¬µÃµ½Ò»ÏµÁĞ°üº¬s×Ó´®µÄIP·¶Î§¼ÇÂ¼
+	 * ç»™å®šä¸€ä¸ªåœ°ç‚¹çš„ä¸å®Œå…¨åå­—ï¼Œå¾—åˆ°ä¸€ç³»åˆ—åŒ…å«så­ä¸²çš„IPèŒƒå›´è®°å½•
 	 * 
-	 * @param s
-	 *            µØµã×Ó´®
-	 * @return °üº¬IPEntryÀàĞÍµÄList
+	 * @param s åœ°ç‚¹å­ä¸²
+	 * @return åŒ…å«IPEntryç±»å‹çš„List
 	 */
 	public List getIPEntriesDebug(String s) {
 		List ret = new ArrayList();
 		long endOffset = ipEnd + 4;
 		for (long offset = ipBegin + 4; offset <= endOffset; offset += IP_RECORD_LENGTH) {
-			// ¶ÁÈ¡½áÊøIPÆ«ÒÆ
+			// è¯»å–ç»“æŸIPåç§»
 			long temp = readLong3(offset);
-			// Èç¹ûtemp²»µÈÓÚ-1£¬¶ÁÈ¡IPµÄµØµãĞÅÏ¢
+			// å¦‚æœtempä¸ç­‰äº-1ï¼Œè¯»å–IPçš„åœ°ç‚¹ä¿¡æ¯
 			if (temp != -1) {
 				IPLocation loc = getIPLocation(temp);
-				// ÅĞ¶ÏÊÇ·ñÕâ¸öµØµãÀïÃæ°üº¬ÁËs×Ó´®£¬Èç¹û°üº¬ÁË£¬Ìí¼ÓÕâ¸ö¼ÇÂ¼µ½ListÖĞ£¬Èç¹ûÃ»ÓĞ£¬¼ÌĞø
+				// åˆ¤æ–­æ˜¯å¦è¿™ä¸ªåœ°ç‚¹é‡Œé¢åŒ…å«äº†så­ä¸²ï¼Œå¦‚æœåŒ…å«äº†ï¼Œæ·»åŠ è¿™ä¸ªè®°å½•åˆ°Listä¸­ï¼Œå¦‚æœæ²¡æœ‰ï¼Œç»§ç»­
 				if (loc.country.indexOf(s) != -1 || loc.area.indexOf(s) != -1) {
 					IPEntry entry = new IPEntry();
 					entry.country = loc.country;
 					entry.area = loc.area;
-					// µÃµ½ÆğÊ¼IP
+					// å¾—åˆ°èµ·å§‹IP
 					readIP(offset - 4, b4);
 					entry.beginIp = Utils.getIpStringFromBytes(b4);
-					// µÃµ½½áÊøIP
+					// å¾—åˆ°ç»“æŸIP
 					readIP(temp, b4);
 					entry.endIp = Utils.getIpStringFromBytes(b4);
-					// Ìí¼Ó¸Ã¼ÇÂ¼
+					// æ·»åŠ è¯¥è®°å½•
 					ret.add(entry);
 				}
 			}
@@ -169,16 +186,15 @@ public class IPSeeker {
 	}
 
 	/**
-	 * ¸ø¶¨Ò»¸öµØµãµÄ²»ÍêÈ«Ãû×Ö£¬µÃµ½Ò»ÏµÁĞ°üº¬s×Ó´®µÄIP·¶Î§¼ÇÂ¼
+	 * ç»™å®šä¸€ä¸ªåœ°ç‚¹çš„ä¸å®Œå…¨åå­—ï¼Œå¾—åˆ°ä¸€ç³»åˆ—åŒ…å«så­ä¸²çš„IPèŒƒå›´è®°å½•
 	 * 
-	 * @param s
-	 *            µØµã×Ó´®
-	 * @return °üº¬IPEntryÀàĞÍµÄList
+	 * @param s åœ°ç‚¹å­ä¸²
+	 * @return åŒ…å«IPEntryç±»å‹çš„List
 	 */
 	public List getIPEntries(String s) {
 		List ret = new ArrayList();
 		try {
-			// Ó³ÉäIPĞÅÏ¢ÎÄ¼şµ½ÄÚ´æÖĞ
+			// æ˜ å°„IPä¿¡æ¯æ–‡ä»¶åˆ°å†…å­˜ä¸­
 			if (mbb == null) {
 				FileChannel fc = ipFile.getChannel();
 				mbb = fc.map(FileChannel.MapMode.READ_ONLY, 0, ipFile.length());
@@ -190,19 +206,18 @@ public class IPSeeker {
 				int temp = readInt3(offset);
 				if (temp != -1) {
 					IPLocation loc = getIPLocation(temp);
-					// ÅĞ¶ÏÊÇ·ñÕâ¸öµØµãÀïÃæ°üº¬ÁËs×Ó´®£¬Èç¹û°üº¬ÁË£¬Ìí¼ÓÕâ¸ö¼ÇÂ¼µ½ListÖĞ£¬Èç¹ûÃ»ÓĞ£¬¼ÌĞø
-					if (loc.country.indexOf(s) != -1
-							|| loc.area.indexOf(s) != -1) {
+					// åˆ¤æ–­æ˜¯å¦è¿™ä¸ªåœ°ç‚¹é‡Œé¢åŒ…å«äº†så­ä¸²ï¼Œå¦‚æœåŒ…å«äº†ï¼Œæ·»åŠ è¿™ä¸ªè®°å½•åˆ°Listä¸­ï¼Œå¦‚æœæ²¡æœ‰ï¼Œç»§ç»­
+					if (loc.country.indexOf(s) != -1 || loc.area.indexOf(s) != -1) {
 						IPEntry entry = new IPEntry();
 						entry.country = loc.country;
 						entry.area = loc.area;
-						// µÃµ½ÆğÊ¼IP
+						// å¾—åˆ°èµ·å§‹IP
 						readIP(offset - 4, b4);
 						entry.beginIp = Utils.getIpStringFromBytes(b4);
-						// µÃµ½½áÊøIP
+						// å¾—åˆ°ç»“æŸIP
 						readIP(temp, b4);
 						entry.endIp = Utils.getIpStringFromBytes(b4);
-						// Ìí¼Ó¸Ã¼ÇÂ¼
+						// æ·»åŠ è¯¥è®°å½•
 						ret.add(entry);
 					}
 				}
@@ -214,7 +229,7 @@ public class IPSeeker {
 	}
 
 	/**
-	 * ´ÓÄÚ´æÓ³ÉäÎÄ¼şµÄoffsetÎ»ÖÃ¿ªÊ¼µÄ3¸ö×Ö½Ú¶ÁÈ¡Ò»¸öint
+	 * ä»å†…å­˜æ˜ å°„æ–‡ä»¶çš„offsetä½ç½®å¼€å§‹çš„3ä¸ªå­—èŠ‚è¯»å–ä¸€ä¸ªint
 	 * 
 	 * @param offset
 	 * @return
@@ -225,7 +240,7 @@ public class IPSeeker {
 	}
 
 	/**
-	 * ´ÓÄÚ´æÓ³ÉäÎÄ¼şµÄµ±Ç°Î»ÖÃ¿ªÊ¼µÄ3¸ö×Ö½Ú¶ÁÈ¡Ò»¸öint
+	 * ä»å†…å­˜æ˜ å°„æ–‡ä»¶çš„å½“å‰ä½ç½®å¼€å§‹çš„3ä¸ªå­—èŠ‚è¯»å–ä¸€ä¸ªint
 	 * 
 	 * @return
 	 */
@@ -234,19 +249,18 @@ public class IPSeeker {
 	}
 
 	/**
-	 * ¸ù¾İIPµÃµ½¹ú¼ÒÃû
+	 * æ ¹æ®IPå¾—åˆ°å›½å®¶å
 	 * 
-	 * @param ip
-	 *            ipµÄ×Ö½ÚÊı×éĞÎÊ½
-	 * @return ¹ú¼ÒÃû×Ö·û´®
+	 * @param ip ipçš„å­—èŠ‚æ•°ç»„å½¢å¼
+	 * @return å›½å®¶åå­—ç¬¦ä¸²
 	 */
 	public String getCountry(byte[] ip) {
-		// ¼ì²éipµØÖ·ÎÄ¼şÊÇ·ñÕı³£
+		// æ£€æŸ¥ipåœ°å€æ–‡ä»¶æ˜¯å¦æ­£å¸¸
 		if (ipFile == null)
-			return "´íÎóµÄIPÊı¾İ¿âÎÄ¼ş";
-		// ±£´æip£¬×ª»»ip×Ö½ÚÊı×éÎª×Ö·û´®ĞÎÊ½
+			return "é”™è¯¯çš„IPæ•°æ®åº“æ–‡ä»¶";
+		// ä¿å­˜ipï¼Œè½¬æ¢ipå­—èŠ‚æ•°ç»„ä¸ºå­—ç¬¦ä¸²å½¢å¼
 		String ipStr = Utils.getIpStringFromBytes(ip);
-		// ÏÈ¼ì²écacheÖĞÊÇ·ñÒÑ¾­°üº¬ÓĞÕâ¸öipµÄ½á¹û£¬Ã»ÓĞÔÙËÑË÷ÎÄ¼ş
+		// å…ˆæ£€æŸ¥cacheä¸­æ˜¯å¦å·²ç»åŒ…å«æœ‰è¿™ä¸ªipçš„ç»“æœï¼Œæ²¡æœ‰å†æœç´¢æ–‡ä»¶
 		if (ipCache.containsKey(ipStr)) {
 			IPLocation loc = (IPLocation) ipCache.get(ipStr);
 			return loc.country;
@@ -258,30 +272,28 @@ public class IPSeeker {
 	}
 
 	/**
-	 * ¸ù¾İIPµÃµ½¹ú¼ÒÃû
+	 * æ ¹æ®IPå¾—åˆ°å›½å®¶å
 	 * 
-	 * @param ip
-	 *            IPµÄ×Ö·û´®ĞÎÊ½
-	 * @return ¹ú¼ÒÃû×Ö·û´®
+	 * @param ip IPçš„å­—ç¬¦ä¸²å½¢å¼
+	 * @return å›½å®¶åå­—ç¬¦ä¸²
 	 */
 	public String getCountry(String ip) {
 		return getCountry(Utils.getIpByteArrayFromString(ip));
 	}
 
 	/**
-	 * ¸ù¾İIPµÃµ½µØÇøÃû
+	 * æ ¹æ®IPå¾—åˆ°åœ°åŒºå
 	 * 
-	 * @param ip
-	 *            ipµÄ×Ö½ÚÊı×éĞÎÊ½
-	 * @return µØÇøÃû×Ö·û´®
+	 * @param ip ipçš„å­—èŠ‚æ•°ç»„å½¢å¼
+	 * @return åœ°åŒºåå­—ç¬¦ä¸²
 	 */
 	public String getArea(byte[] ip) {
-		// ¼ì²éipµØÖ·ÎÄ¼şÊÇ·ñÕı³£
+		// æ£€æŸ¥ipåœ°å€æ–‡ä»¶æ˜¯å¦æ­£å¸¸
 		if (ipFile == null)
-			return "´íÎóµÄIPÊı¾İ¿âÎÄ¼ş";
-		// ±£´æip£¬×ª»»ip×Ö½ÚÊı×éÎª×Ö·û´®ĞÎÊ½
+			return "é”™è¯¯çš„IPæ•°æ®åº“æ–‡ä»¶";
+		// ä¿å­˜ipï¼Œè½¬æ¢ipå­—èŠ‚æ•°ç»„ä¸ºå­—ç¬¦ä¸²å½¢å¼
 		String ipStr = Utils.getIpStringFromBytes(ip);
-		// ÏÈ¼ì²écacheÖĞÊÇ·ñÒÑ¾­°üº¬ÓĞÕâ¸öipµÄ½á¹û£¬Ã»ÓĞÔÙËÑË÷ÎÄ¼ş
+		// å…ˆæ£€æŸ¥cacheä¸­æ˜¯å¦å·²ç»åŒ…å«æœ‰è¿™ä¸ªipçš„ç»“æœï¼Œæ²¡æœ‰å†æœç´¢æ–‡ä»¶
 		if (ipCache.containsKey(ipStr)) {
 			IPLocation loc = (IPLocation) ipCache.get(ipStr);
 			return loc.area;
@@ -293,22 +305,20 @@ public class IPSeeker {
 	}
 
 	/**
-	 * ¸ù¾İIPµÃµ½µØÇøÃû
+	 * æ ¹æ®IPå¾—åˆ°åœ°åŒºå
 	 * 
-	 * @param ip
-	 *            IPµÄ×Ö·û´®ĞÎÊ½
-	 * @return µØÇøÃû×Ö·û´®
+	 * @param ip IPçš„å­—ç¬¦ä¸²å½¢å¼
+	 * @return åœ°åŒºåå­—ç¬¦ä¸²
 	 */
 	public String getArea(String ip) {
 		return getArea(Utils.getIpByteArrayFromString(ip));
 	}
 
 	/**
-	 * ¸ù¾İipËÑË÷ipĞÅÏ¢ÎÄ¼ş£¬µÃµ½IPLocation½á¹¹£¬ËùËÑË÷µÄip²ÎÊı´ÓÀà³ÉÔ±ipÖĞµÃµ½
+	 * æ ¹æ®ipæœç´¢ipä¿¡æ¯æ–‡ä»¶ï¼Œå¾—åˆ°IPLocationç»“æ„ï¼Œæ‰€æœç´¢çš„ipå‚æ•°ä»ç±»æˆå‘˜ipä¸­å¾—åˆ°
 	 * 
-	 * @param ip
-	 *            Òª²éÑ¯µÄIP
-	 * @return IPLocation½á¹¹
+	 * @param ip è¦æŸ¥è¯¢çš„IP
+	 * @return IPLocationç»“æ„
 	 */
 	private IPLocation getIPLocation(byte[] ip) {
 		IPLocation info = null;
@@ -317,17 +327,17 @@ public class IPSeeker {
 			info = getIPLocation(offset);
 		if (info == null) {
 			info = new IPLocation();
-			info.country = "Î´Öª¹ú¼Ò";
-			info.area = "Î´ÖªµØÇø";
+			info.country = "æœªçŸ¥å›½å®¶";
+			info.area = "æœªçŸ¥åœ°åŒº";
 		}
 		return info;
 	}
 
 	/**
-	 * ´ÓoffsetÎ»ÖÃ¶ÁÈ¡4¸ö×Ö½ÚÎªÒ»¸ölong£¬ÒòÎªjavaÎªbig-endian¸ñÊ½£¬ËùÒÔÃ»°ì·¨ ÓÃÁËÕâÃ´Ò»¸öº¯ÊıÀ´×ö×ª»»
+	 * ä»offsetä½ç½®è¯»å–4ä¸ªå­—èŠ‚ä¸ºä¸€ä¸ªlongï¼Œå› ä¸ºjavaä¸ºbig-endianæ ¼å¼ï¼Œæ‰€ä»¥æ²¡åŠæ³• ç”¨äº†è¿™ä¹ˆä¸€ä¸ªå‡½æ•°æ¥åšè½¬æ¢
 	 * 
 	 * @param offset
-	 * @return ¶ÁÈ¡µÄlongÖµ£¬·µ»Ø-1±íÊ¾¶ÁÈ¡ÎÄ¼şÊ§°Ü
+	 * @return è¯»å–çš„longå€¼ï¼Œè¿”å›-1è¡¨ç¤ºè¯»å–æ–‡ä»¶å¤±è´¥
 	 */
 	private long readLong4(long offset) {
 		long ret = 0;
@@ -344,10 +354,10 @@ public class IPSeeker {
 	}
 
 	/**
-	 * ´ÓoffsetÎ»ÖÃ¶ÁÈ¡3¸ö×Ö½ÚÎªÒ»¸ölong£¬ÒòÎªjavaÎªbig-endian¸ñÊ½£¬ËùÒÔÃ»°ì·¨ ÓÃÁËÕâÃ´Ò»¸öº¯ÊıÀ´×ö×ª»»
+	 * ä»offsetä½ç½®è¯»å–3ä¸ªå­—èŠ‚ä¸ºä¸€ä¸ªlongï¼Œå› ä¸ºjavaä¸ºbig-endianæ ¼å¼ï¼Œæ‰€ä»¥æ²¡åŠæ³• ç”¨äº†è¿™ä¹ˆä¸€ä¸ªå‡½æ•°æ¥åšè½¬æ¢
 	 * 
 	 * @param offset
-	 * @return ¶ÁÈ¡µÄlongÖµ£¬·µ»Ø-1±íÊ¾¶ÁÈ¡ÎÄ¼şÊ§°Ü
+	 * @return è¯»å–çš„longå€¼ï¼Œè¿”å›-1è¡¨ç¤ºè¯»å–æ–‡ä»¶å¤±è´¥
 	 */
 	private long readLong3(long offset) {
 		long ret = 0;
@@ -364,7 +374,7 @@ public class IPSeeker {
 	}
 
 	/**
-	 * ´Óµ±Ç°Î»ÖÃ¶ÁÈ¡3¸ö×Ö½Ú×ª»»³Élong
+	 * ä»å½“å‰ä½ç½®è¯»å–3ä¸ªå­—èŠ‚è½¬æ¢æˆlong
 	 * 
 	 * @return
 	 */
@@ -382,8 +392,7 @@ public class IPSeeker {
 	}
 
 	/**
-	 * ´ÓoffsetÎ»ÖÃ¶ÁÈ¡ËÄ¸ö×Ö½ÚµÄipµØÖ··ÅÈëipÊı×éÖĞ£¬¶ÁÈ¡ºóµÄipÎªbig-endian¸ñÊ½£¬µ«ÊÇ
-	 * ÎÄ¼şÖĞÊÇlittle-endianĞÎÊ½£¬½«»á½øĞĞ×ª»»
+	 * ä»offsetä½ç½®è¯»å–å››ä¸ªå­—èŠ‚çš„ipåœ°å€æ”¾å…¥ipæ•°ç»„ä¸­ï¼Œè¯»å–åçš„ipä¸ºbig-endianæ ¼å¼ï¼Œä½†æ˜¯ æ–‡ä»¶ä¸­æ˜¯little-endianå½¢å¼ï¼Œå°†ä¼šè¿›è¡Œè½¬æ¢
 	 * 
 	 * @param offset
 	 * @param ip
@@ -404,8 +413,7 @@ public class IPSeeker {
 	}
 
 	/**
-	 * ´ÓoffsetÎ»ÖÃ¶ÁÈ¡ËÄ¸ö×Ö½ÚµÄipµØÖ··ÅÈëipÊı×éÖĞ£¬¶ÁÈ¡ºóµÄipÎªbig-endian¸ñÊ½£¬µ«ÊÇ
-	 * ÎÄ¼şÖĞÊÇlittle-endianĞÎÊ½£¬½«»á½øĞĞ×ª»»
+	 * ä»offsetä½ç½®è¯»å–å››ä¸ªå­—èŠ‚çš„ipåœ°å€æ”¾å…¥ipæ•°ç»„ä¸­ï¼Œè¯»å–åçš„ipä¸ºbig-endianæ ¼å¼ï¼Œä½†æ˜¯ æ–‡ä»¶ä¸­æ˜¯little-endianå½¢å¼ï¼Œå°†ä¼šè¿›è¡Œè½¬æ¢
 	 * 
 	 * @param offset
 	 * @param ip
@@ -422,13 +430,11 @@ public class IPSeeker {
 	}
 
 	/**
-	 * °ÑÀà³ÉÔ±ipºÍbeginIp±È½Ï£¬×¢ÒâÕâ¸öbeginIpÊÇbig-endianµÄ
+	 * æŠŠç±»æˆå‘˜ipå’ŒbeginIpæ¯”è¾ƒï¼Œæ³¨æ„è¿™ä¸ªbeginIpæ˜¯big-endiançš„
 	 * 
-	 * @param ip
-	 *            Òª²éÑ¯µÄIP
-	 * @param beginIp
-	 *            ºÍ±»²éÑ¯IPÏà±È½ÏµÄIP
-	 * @return ÏàµÈ·µ»Ø0£¬ip´óÓÚbeginIpÔò·µ»Ø1£¬Ğ¡ÓÚ·µ»Ø-1¡£
+	 * @param ip      è¦æŸ¥è¯¢çš„IP
+	 * @param beginIp å’Œè¢«æŸ¥è¯¢IPç›¸æ¯”è¾ƒçš„IP
+	 * @return ç›¸ç­‰è¿”å›0ï¼Œipå¤§äºbeginIpåˆ™è¿”å›1ï¼Œå°äºè¿”å›-1ã€‚
 	 */
 	private int compareIP(byte[] ip, byte[] beginIp) {
 		for (int i = 0; i < 4; i++) {
@@ -440,39 +446,38 @@ public class IPSeeker {
 	}
 
 	/**
-	 * °ÑÁ½¸öbyteµ±×÷ÎŞ·ûºÅÊı½øĞĞ±È½Ï
+	 * æŠŠä¸¤ä¸ªbyteå½“ä½œæ— ç¬¦å·æ•°è¿›è¡Œæ¯”è¾ƒ
 	 * 
 	 * @param b1
 	 * @param b2
-	 * @return Èôb1´óÓÚb2Ôò·µ»Ø1£¬ÏàµÈ·µ»Ø0£¬Ğ¡ÓÚ·µ»Ø-1
+	 * @return è‹¥b1å¤§äºb2åˆ™è¿”å›1ï¼Œç›¸ç­‰è¿”å›0ï¼Œå°äºè¿”å›-1
 	 */
 	private int compareByte(byte b1, byte b2) {
-		if ((b1 & 0xFF) > (b2 & 0xFF)) // ±È½ÏÊÇ·ñ´óÓÚ
+		if ((b1 & 0xFF) > (b2 & 0xFF)) // æ¯”è¾ƒæ˜¯å¦å¤§äº
 			return 1;
-		else if ((b1 ^ b2) == 0)// ÅĞ¶ÏÊÇ·ñÏàµÈ
+		else if ((b1 ^ b2) == 0)// åˆ¤æ–­æ˜¯å¦ç›¸ç­‰
 			return 0;
 		else
 			return -1;
 	}
 
 	/**
-	 * Õâ¸ö·½·¨½«¸ù¾İipµÄÄÚÈİ£¬¶¨Î»µ½°üº¬Õâ¸öip¹ú¼ÒµØÇøµÄ¼ÇÂ¼´¦£¬·µ»ØÒ»¸ö¾ø¶ÔÆ«ÒÆ ·½·¨Ê¹ÓÃ¶ş·Ö·¨²éÕÒ¡£
+	 * è¿™ä¸ªæ–¹æ³•å°†æ ¹æ®ipçš„å†…å®¹ï¼Œå®šä½åˆ°åŒ…å«è¿™ä¸ªipå›½å®¶åœ°åŒºçš„è®°å½•å¤„ï¼Œè¿”å›ä¸€ä¸ªç»å¯¹åç§» æ–¹æ³•ä½¿ç”¨äºŒåˆ†æ³•æŸ¥æ‰¾ã€‚
 	 * 
-	 * @param ip
-	 *            Òª²éÑ¯µÄIP
-	 * @return Èç¹ûÕÒµ½ÁË£¬·µ»Ø½áÊøIPµÄÆ«ÒÆ£¬Èç¹ûÃ»ÓĞÕÒµ½£¬·µ»Ø-1
+	 * @param ip è¦æŸ¥è¯¢çš„IP
+	 * @return å¦‚æœæ‰¾åˆ°äº†ï¼Œè¿”å›ç»“æŸIPçš„åç§»ï¼Œå¦‚æœæ²¡æœ‰æ‰¾åˆ°ï¼Œè¿”å›-1
 	 */
 	private long locateIP(byte[] ip) {
 		long m = 0;
 		int r;
-		// ±È½ÏµÚÒ»¸öipÏî
+		// æ¯”è¾ƒç¬¬ä¸€ä¸ªipé¡¹
 		readIP(ipBegin, b4);
 		r = compareIP(ip, b4);
 		if (r == 0)
 			return ipBegin;
 		else if (r < 0)
 			return -1;
-		// ¿ªÊ¼¶ş·ÖËÑË÷
+		// å¼€å§‹äºŒåˆ†æœç´¢
 		for (long i = ipBegin, j = ipEnd; i < j;) {
 			m = getMiddleOffset(i, j);
 			readIP(m, b4);
@@ -489,8 +494,8 @@ public class IPSeeker {
 			} else
 				return readLong3(m + 4);
 		}
-		// Èç¹ûÑ­»·½áÊøÁË£¬ÄÇÃ´iºÍj±Ø¶¨ÊÇÏàµÈµÄ£¬Õâ¸ö¼ÇÂ¼Îª×î¿ÉÄÜµÄ¼ÇÂ¼£¬µ«ÊÇ²¢·Ç
-		// ¿Ï¶¨¾ÍÊÇ£¬»¹Òª¼ì²éÒ»ÏÂ£¬Èç¹ûÊÇ£¬¾Í·µ»Ø½áÊøµØÖ·ÇøµÄ¾ø¶ÔÆ«ÒÆ
+		// å¦‚æœå¾ªç¯ç»“æŸäº†ï¼Œé‚£ä¹ˆiå’Œjå¿…å®šæ˜¯ç›¸ç­‰çš„ï¼Œè¿™ä¸ªè®°å½•ä¸ºæœ€å¯èƒ½çš„è®°å½•ï¼Œä½†æ˜¯å¹¶é
+		// è‚¯å®šå°±æ˜¯ï¼Œè¿˜è¦æ£€æŸ¥ä¸€ä¸‹ï¼Œå¦‚æœæ˜¯ï¼Œå°±è¿”å›ç»“æŸåœ°å€åŒºçš„ç»å¯¹åç§»
 		m = readLong3(m + 4);
 		readIP(m, b4);
 		r = compareIP(ip, b4);
@@ -501,7 +506,7 @@ public class IPSeeker {
 	}
 
 	/**
-	 * µÃµ½beginÆ«ÒÆºÍendÆ«ÒÆÖĞ¼äÎ»ÖÃ¼ÇÂ¼µÄÆ«ÒÆ
+	 * å¾—åˆ°beginåç§»å’Œendåç§»ä¸­é—´ä½ç½®è®°å½•çš„åç§»
 	 * 
 	 * @param begin
 	 * @param end
@@ -516,30 +521,30 @@ public class IPSeeker {
 	}
 
 	/**
-	 * ¸ø¶¨Ò»¸öip¹ú¼ÒµØÇø¼ÇÂ¼µÄÆ«ÒÆ£¬·µ»ØÒ»¸öIPLocation½á¹¹
+	 * ç»™å®šä¸€ä¸ªipå›½å®¶åœ°åŒºè®°å½•çš„åç§»ï¼Œè¿”å›ä¸€ä¸ªIPLocationç»“æ„
 	 * 
 	 * @param offset
 	 * @return
 	 */
 	private IPLocation getIPLocation(long offset) {
 		try {
-			// Ìø¹ı4×Ö½Úip
+			// è·³è¿‡4å­—èŠ‚ip
 			ipFile.seek(offset + 4);
-			// ¶ÁÈ¡µÚÒ»¸ö×Ö½ÚÅĞ¶ÏÊÇ·ñ±êÖ¾×Ö½Ú
+			// è¯»å–ç¬¬ä¸€ä¸ªå­—èŠ‚åˆ¤æ–­æ˜¯å¦æ ‡å¿—å­—èŠ‚
 			byte b = ipFile.readByte();
 			if (b == AREA_FOLLOWED) {
-				// ¶ÁÈ¡¹ú¼ÒÆ«ÒÆ
+				// è¯»å–å›½å®¶åç§»
 				long countryOffset = readLong3();
-				// Ìø×ªÖÁÆ«ÒÆ´¦
+				// è·³è½¬è‡³åç§»å¤„
 				ipFile.seek(countryOffset);
-				// ÔÙ¼ì²éÒ»´Î±êÖ¾×Ö½Ú£¬ÒòÎªÕâ¸öÊ±ºòÕâ¸öµØ·½ÈÔÈ»¿ÉÄÜÊÇ¸öÖØ¶¨Ïò
+				// å†æ£€æŸ¥ä¸€æ¬¡æ ‡å¿—å­—èŠ‚ï¼Œå› ä¸ºè¿™ä¸ªæ—¶å€™è¿™ä¸ªåœ°æ–¹ä»ç„¶å¯èƒ½æ˜¯ä¸ªé‡å®šå‘
 				b = ipFile.readByte();
 				if (b == NO_AREA) {
 					loc.country = readString(readLong3());
 					ipFile.seek(countryOffset + 4);
 				} else
 					loc.country = readString(countryOffset);
-				// ¶ÁÈ¡µØÇø±êÖ¾
+				// è¯»å–åœ°åŒºæ ‡å¿—
 				loc.area = readArea(ipFile.getFilePointer());
 			} else if (b == NO_AREA) {
 				loc.country = readString(readLong3());
@@ -559,23 +564,23 @@ public class IPSeeker {
 	 * @return
 	 */
 	private IPLocation getIPLocation(int offset) {
-		// Ìø¹ı4×Ö½Úip
+		// è·³è¿‡4å­—èŠ‚ip
 		mbb.position(offset + 4);
-		// ¶ÁÈ¡µÚÒ»¸ö×Ö½ÚÅĞ¶ÏÊÇ·ñ±êÖ¾×Ö½Ú
+		// è¯»å–ç¬¬ä¸€ä¸ªå­—èŠ‚åˆ¤æ–­æ˜¯å¦æ ‡å¿—å­—èŠ‚
 		byte b = mbb.get();
 		if (b == AREA_FOLLOWED) {
-			// ¶ÁÈ¡¹ú¼ÒÆ«ÒÆ
+			// è¯»å–å›½å®¶åç§»
 			int countryOffset = readInt3();
-			// Ìø×ªÖÁÆ«ÒÆ´¦
+			// è·³è½¬è‡³åç§»å¤„
 			mbb.position(countryOffset);
-			// ÔÙ¼ì²éÒ»´Î±êÖ¾×Ö½Ú£¬ÒòÎªÕâ¸öÊ±ºòÕâ¸öµØ·½ÈÔÈ»¿ÉÄÜÊÇ¸öÖØ¶¨Ïò
+			// å†æ£€æŸ¥ä¸€æ¬¡æ ‡å¿—å­—èŠ‚ï¼Œå› ä¸ºè¿™ä¸ªæ—¶å€™è¿™ä¸ªåœ°æ–¹ä»ç„¶å¯èƒ½æ˜¯ä¸ªé‡å®šå‘
 			b = mbb.get();
 			if (b == NO_AREA) {
 				loc.country = readString(readInt3());
 				mbb.position(countryOffset + 4);
 			} else
 				loc.country = readString(countryOffset);
-			// ¶ÁÈ¡µØÇø±êÖ¾
+			// è¯»å–åœ°åŒºæ ‡å¿—
 			loc.area = readArea(mbb.position());
 		} else if (b == NO_AREA) {
 			loc.country = readString(readInt3());
@@ -588,10 +593,10 @@ public class IPSeeker {
 	}
 
 	/**
-	 * ´ÓoffsetÆ«ÒÆ¿ªÊ¼½âÎöºóÃæµÄ×Ö½Ú£¬¶Á³öÒ»¸öµØÇøÃû
+	 * ä»offsetåç§»å¼€å§‹è§£æåé¢çš„å­—èŠ‚ï¼Œè¯»å‡ºä¸€ä¸ªåœ°åŒºå
 	 * 
 	 * @param offset
-	 * @return µØÇøÃû×Ö·û´®
+	 * @return åœ°åŒºåå­—ç¬¦ä¸²
 	 * @throws IOException
 	 */
 	private String readArea(long offset) throws IOException {
@@ -600,7 +605,7 @@ public class IPSeeker {
 		if (b == 0x01 || b == 0x02) {
 			long areaOffset = readLong3(offset + 1);
 			if (areaOffset == 0)
-				return "Î´ÖªµØÇø";
+				return "æœªçŸ¥åœ°åŒº";
 			else
 				return readString(areaOffset);
 		} else
@@ -617,7 +622,7 @@ public class IPSeeker {
 		if (b == 0x01 || b == 0x02) {
 			int areaOffset = readInt3();
 			if (areaOffset == 0)
-				return "Î´ÖªµØÇø";
+				return "æœªçŸ¥åœ°åŒº";
 			else
 				return readString(areaOffset);
 		} else
@@ -625,17 +630,16 @@ public class IPSeeker {
 	}
 
 	/**
-	 * ´ÓoffsetÆ«ÒÆ´¦¶ÁÈ¡Ò»¸öÒÔ0½áÊøµÄ×Ö·û´®
+	 * ä»offsetåç§»å¤„è¯»å–ä¸€ä¸ªä»¥0ç»“æŸçš„å­—ç¬¦ä¸²
 	 * 
 	 * @param offset
-	 * @return ¶ÁÈ¡µÄ×Ö·û´®£¬³ö´í·µ»Ø¿Õ×Ö·û´®
+	 * @return è¯»å–çš„å­—ç¬¦ä¸²ï¼Œå‡ºé”™è¿”å›ç©ºå­—ç¬¦ä¸²
 	 */
 	private String readString(long offset) {
 		try {
 			ipFile.seek(offset);
 			int i;
-			for (i = 0, buf[i] = ipFile.readByte(); buf[i] != 0; buf[++i] = ipFile
-					.readByte())
+			for (i = 0, buf[i] = ipFile.readByte(); buf[i] != 0; buf[++i] = ipFile.readByte())
 				;
 			if (i != 0)
 				return Utils.getString(buf, 0, i, "GBK");
@@ -646,7 +650,7 @@ public class IPSeeker {
 	}
 
 	/**
-	 * ´ÓÄÚ´æÓ³ÉäÎÄ¼şµÄoffsetÎ»ÖÃµÃµ½Ò»¸ö0½áÎ²×Ö·û´®
+	 * ä»å†…å­˜æ˜ å°„æ–‡ä»¶çš„offsetä½ç½®å¾—åˆ°ä¸€ä¸ª0ç»“å°¾å­—ç¬¦ä¸²
 	 * 
 	 * @param offset
 	 * @return
@@ -666,8 +670,7 @@ public class IPSeeker {
 	}
 
 	public String getAddress(String ip) {
-		String country = getCountry(ip).equals(" CZ88.NET") ? ""
-				: getCountry(ip);
+		String country = getCountry(ip).equals(" CZ88.NET") ? "" : getCountry(ip);
 		String area = getArea(ip).equals(" CZ88.NET") ? "" : getArea(ip);
 		String address = country + " " + area;
 		return address.trim();

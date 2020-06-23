@@ -14,12 +14,25 @@
 
 7. JDK：（Book： Mac 1.7.0_25）
    * jdk-7u80-linux-x64
-    
+
 8. Ant：1.10.8
 
 9. Eclipse 2020
    * ZooKeeper Plugin 
-    
+
 10. Maven 3.6.3： https://downloads.apache.org/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
 
 11. nexus：nexus-3.20.1-01-mac
+
+----
+
+* Mac OS: 10.13.6
+
+* Mac JDK: 1.6, 1.7 and 1.8
+
+* Mac Hadoop: 2.9.2
+  * compiled on Mac
+
+* Eclipse IDE for Enterprise Java Developers.
+  Version: 2020-03 (4.15.0)
+  Build id: 20200313-1211

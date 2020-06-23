@@ -15,7 +15,7 @@
 7. JDK：（Book： Mac 1.7.0_25）
    * jdk-7u80-linux-x64
 
-8. Ant：1.10.8
+8. Ant：1.10.8/apache-ant-1.9.15-bin
 
 9. Eclipse 2020
    * ZooKeeper Plugin 

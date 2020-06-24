@@ -23,6 +23,7 @@ package org.dataguru.mr.iplocation;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteOrder;
@@ -72,23 +73,28 @@ public class IPSeeker {
 //	private static final String IP_FILE = IPSeeker.class.getResource("/qqwry.dat")
 //			.toString().substring(5);
 
-
-	//In order to show path with Chinese characters correctly.
+	// In order to show path with Chinese characters correctly.
 	private static String IP_FILE = IPSeeker.class.getResource("/qqwry.dat")
 			.toString().substring(5);
 	
+	//中文路径解决办法二：
 	static {
-		URI uri;
 		try {
-			IP_FILE = new URI(IP_FILE).getPath();
-			System.out.println("中文版本路径： "+ IP_FILE);
-			//中文版本路径：.../myHadoops/target/classes/qqwry.dat
-
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(e);
+			IP_FILE = java.net.URLDecoder.decode(IP_FILE, "utf-8");
+			System.out.println("IP_FILE" + IP_FILE);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
 		}
+
 	}
 
+	/* 中文路径解决办法一：
+	 * static { URI uri; try { IP_FILE = new URI(IP_FILE).getPath();
+	 * System.out.println("中文版本路径： "+ IP_FILE);
+	 * //中文版本路径：.../myHadoops/target/classes/qqwry.dat
+	 * 
+	 * } catch (URISyntaxException e) { throw new RuntimeException(e); } }
+	 */
 	// 一些固定常量，比如记录长度等等
 	private static final int IP_RECORD_LENGTH = 7;
 	private static final byte AREA_FOLLOWED = 0x01;

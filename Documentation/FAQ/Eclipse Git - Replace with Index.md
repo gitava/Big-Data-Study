@@ -1,0 +1,1 @@
+if a file is Team/Add to Index, but not pushed to remote repo or commit, then you can Replace With/Index to replace the uncommited change back. 

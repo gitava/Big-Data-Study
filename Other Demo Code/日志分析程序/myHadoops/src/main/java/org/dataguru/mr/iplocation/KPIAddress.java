@@ -1,3 +1,6 @@
+/*
+ * Tested with new mock data.
+ */
 package org.dataguru.mr.iplocation;
 
 import java.io.FileNotFoundException;
@@ -112,7 +115,7 @@ public class KPIAddress {
 	public static void main(String[] args) throws Exception {
 		String input = "hdfs://192.168.33.101:9000/input/access.log";
 		// for each testing run,the hdfs folder and tmpDir folder should not be pre-existing.
-		String output = "hdfs://192.168.33.101:9000/user/hdfs/address";
+		String output = "hdfs://192.168.33.101:9000/output/hdfs/address";
 
 		Path tempDir = new Path("hdfs://192.168.33.101:9000/temp");
 

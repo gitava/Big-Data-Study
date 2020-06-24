@@ -19,6 +19,10 @@ import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.mapred.TextInputFormat;
 import org.apache.hadoop.mapred.TextOutputFormat;
 
+/**
+ * Code has been tested without output
+ *
+ */
 public class KPIIP {
 
     public static class KPIIPMapper extends MapReduceBase implements Mapper<Object, Text, Text, Text> {
@@ -50,8 +54,8 @@ public class KPIIP {
     }
 
     public static void main(String[] args) throws Exception {
-        String input = "hdfs://192.168.0.110:9000/input/access.log";
-        String output = "hdfs://192.168.0.110:9000/user/hdfs/ip";
+        String input = "hdfs://192.168.33.101:9000/input/access.log";
+        String output = "hdfs://192.168.33.101:9000/output/hdfs/ip";
 
         JobConf conf = new JobConf(KPIIP.class);
         conf.setJobName("KPIIP");

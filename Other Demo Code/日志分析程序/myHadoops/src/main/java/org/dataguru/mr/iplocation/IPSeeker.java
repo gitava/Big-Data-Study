@@ -1,3 +1,5 @@
+/*Code has been tested to run correctly.*/
+
 /*
  LumaQQ - Java QQ Client
  *
@@ -685,7 +687,8 @@ public class IPSeeker {
 	public static void main(String[] args) {
 
 		IPSeeker ipseeker = new IPSeeker();
-		String address = ipseeker.getAddress("95.168.222.25");
+//		String address = ipseeker.getAddress("95.168.222.25");
+		String address = ipseeker.getAddress("110.52.250.126");
 		System.out.println(address);
 
 	}

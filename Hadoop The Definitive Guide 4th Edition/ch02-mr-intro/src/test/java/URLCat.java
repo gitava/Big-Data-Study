@@ -25,7 +25,8 @@ public class URLCat {
 			if (args.length == 0) {
 				// if run on Eclipse w/o args
 				System.out.println("Running without args " + args.length);
-				in = new URL("hdfs://192.168.33.101:9000/wordcount/input/somewords.txt").openStream();
+//				in = new URL("hdfs://192.168.33.101:9000/wordcount/input/somewords.txt").openStream();
+				in = new URL("hdfs://192.168.33.101:9000/input/A51256-00451-2020").openStream();
 			} else {
 				System.out.println("Running withargs " + args.length);
 				in = new URL(args[0]).openStream();

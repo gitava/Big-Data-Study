@@ -1,9 +1,9 @@
 # 安装配置pig -- 0.17.0
 
-* 下载解压安装包
-* 修改hosts文件
-* 设置PATH，增加指向hadoop/bin
-* 设置PIG_CLASSPATH环境变量
+* 下载解压安装包 （https://mirrors.bfsu.edu.cn/apache/pig/pig-0.17.0/）
+* 修改hosts文件 （/etc/hosts）
+* 设置PATH，增加指向hadoop/bin（~/.bash_profile）
+* 设置PIG_CLASSPATH环境变量（~/.bash_profile）
 * 启动pig
 
 ### 复制Pig安装文件到虚拟机

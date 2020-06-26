@@ -1,0 +1,1 @@
+* 2020-06-26 add into vagrant file solution of pig on hdp1 [Pending]

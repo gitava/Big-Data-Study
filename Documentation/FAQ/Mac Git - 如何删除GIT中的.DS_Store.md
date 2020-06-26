@@ -31,4 +31,5 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool TRUE
 ```
 
 恢复.DS_store生成：恢复.DS_store生成：
+
 `defaults delete com.apple.desktopservices DSDontWriteNetworkStores`

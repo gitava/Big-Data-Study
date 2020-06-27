@@ -11,6 +11,7 @@ import com.sun.org.apache.bcel.internal.generic.NEW;
  * 
  * - relative_path:from hdfs://192.168.33.101:9000/
  * 
+ * Tested using an argument: hdfs://192.168.33.101:9000/output/part-r-00000
  * Modified by: fllbeaver
  *
  */
@@ -44,8 +45,9 @@ public class HDFSFileIfExist {
 		String fileName = null;
 
 		if (args.length != 0) {
-			// Check if it's a absolute path provied or relative path only
-			if (args[0].substring(0, 4).toLowerCase().equals(new String("hdfs"))) {
+			// Check if it's a absolute path provide or relative path only
+			// Better way to tell if two string objects are equal.
+			if ("hdfs".equals(args[0].substring(0, 4).toLowerCase())) {
 				fileName = args[0];
 				System.out.println("Absolute path is provided.");
 

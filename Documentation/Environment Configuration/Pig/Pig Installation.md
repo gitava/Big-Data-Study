@@ -83,37 +83,19 @@ On CentOS, env can be used to review all environment variables.
 
 ### Issues and fixes (#5)
 
-copy the following files from /home/vagrant/pig/lib to /home/vagrant/hadoop/share/hadoop/common
+##### Exception in thread "main" java.lang.NoClassDefFoundError: org/joda/time/ReadableInstant
 
-* joda-time-2.9.3.jar
-* jline-2.11.jar
-* antlr-runtime-3.4.jar
+Find a better fix which doesn't need the jar file to be moved.
 
-```bash
-[vagrant@hdp-node-01 common]$ sudo chown 501:joda-time-2.9.3.jar
-[vagrant@hdp-node-01 common]$ sudo chown 501:dialout jline-2.11.jar
-[vagrant@hdp-node-01 common]$ sudo chown 501:dialout antlr-runtime-3.4.jar
+Change the configuration file: /home/vagrant/hadoop/etc/hadoop/hadoop-env.sh
+
+```shell
+# Add customized classpath in order to run own java code
+#export HADOOP_CLASSPATH=/home/vagrant/myclass
+
+# Add to solve pig/hive class lib issues.
+export HADOOP_CLASSPATH=$HADOOP_CLASSPATH:/home/vagrant/myclass
 ```
-
-```bash
-[vagrant@hdp-node-01 common]$ pwd
-/home/vagrant/hadoop/share/hadoop/common
-[vagrant@hdp-node-01 common]$ ls -l
-total 7556
--rw-r--r--. 1 501 dialout  164368 Jun 26 11:37 antlr-runtime-3.4.jar
--rw-r--r--. 1 501 dialout 2619447 Nov 13  2018 hadoop-common-2.9.2-tests.jar
--rw-r--r--. 1 501 dialout 3906902 Nov 13  2018 hadoop-common-2.9.2.jar
--rw-r--r--. 1 501 dialout  188721 Nov 13  2018 hadoop-nfs-2.9.2.jar
-drwxr-xr-x. 2 501 dialout    4096 Nov 13  2018 jdiff
--rw-r--r--. 1 501 dialout  208781 Jun 26 11:36 jline-2.11.jar
--rw-r--r--. 1 501 dialout  627814 Jun 26 11:36 joda-time-2.9.3.jar
-drwxr-xr-x. 2 501 dialout    4096 Nov 13  2018 lib
-drwxr-xr-x. 2 501 dialout      89 Nov 13  2018 sources
-drwxr-xr-x. 2 501 dialout      27 Nov 13  2018 templates
-[vagrant@hdp-node-01 common]$
-```
-
-
 
 ### 进入grunt shell -- Pig工作模式
 

@@ -2,7 +2,7 @@
 
 # Get the aliases and functions
 if [ -f ~/.bashrc ]; then
-        . ~/.bashrc
+	. ~/.bashrc
 fi
 
 # User specific environment and startup programs
@@ -13,7 +13,7 @@ PATH=$PATH:$HOME/.local/bin:$HOME/bin:$HOME/pig/bin
 export PIG_CLASSPATH=/home/vagrant/hadoop/etc/hadoop
 export PIG_USER_CLASSPATH_FIRST=/home/vagrant/pig/lib
 
-# Configuration for hive installation
+
 export HIVE_HOME=/home/vagrant/hive
 export PATH=$PATH:$HIVE_HOME/bin
-export CLASSPATH=$CLASSPATH:$HIVE_HOME/bindfd￼
+export CLASSPATH=$CLASSPATH:$HIVE_HOME/lib

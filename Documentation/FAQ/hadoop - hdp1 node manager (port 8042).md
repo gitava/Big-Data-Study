@@ -1,0 +1,1 @@
+192.168.33.101:8042/node|hdp1 nodemanager

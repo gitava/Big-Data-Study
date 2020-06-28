@@ -974,11 +974,17 @@ hive> create database test;
 hive> create database hdb;
 
 hive> show databases;
-
+OK
+default
+hdb
+test
+Time taken: 0.027 seconds, Fetched: 3 row(s)
 hive> use hdb;
-
+hive> create table htest(name string,age string);
 hive> show tables;
-
+OK
+htest
+Time taken: 0.046 seconds, Fetched: 1 row(s)
 hive> insert into htest values("xiaoxu","20");
 
 hive> select * from htest;

@@ -7,7 +7,7 @@ fi
 
 # User specific environment and startup programs
 # add pig bin folder to path for pig installation
-PATH=$PATH:$HOME/.local/bin:$HOME/bin:$HOME/pig/bin
+PATH=$JAVA_HOME/bin:$JAVA_HOME/jre/bin:$PATH:$HOME/.local/bin:$HOME/bin:$HOME/pig/bin
 
 # Add PIG_CLASSPATH for pig installation
 export PIG_CLASSPATH=/home/vagrant/hadoop/etc/hadoop

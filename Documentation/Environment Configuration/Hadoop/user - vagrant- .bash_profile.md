@@ -1,3 +1,5 @@
+
+```bash
 # .bash_profile
 
 # Get the aliases and functions
@@ -19,3 +21,4 @@ export PIG_USER_CLASSPATH_FIRST=/home/vagrant/pig/lib
 export HIVE_HOME=/home/vagrant/hive
 export PATH=$PATH:$HIVE_HOME/bin
 export CLASSPATH=$CLASSPATH:$HIVE_HOME/lib
+```

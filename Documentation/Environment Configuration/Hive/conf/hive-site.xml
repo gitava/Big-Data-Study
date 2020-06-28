@@ -72,7 +72,7 @@
   </property>
   <property>
     <name>hive.exec.local.scratchdir</name>
-    <value>/home/vagrant/hive/iotmp/${system:user.name}</value>
+    <value>/home/vagrant/hive/iotmp/${user.name}</value>
     <description>Local scratch space for Hive jobs</description>
   </property>
   <property>
@@ -1684,7 +1684,7 @@
     <name>hive.querylog.location</name>
     <!-- default value will cause error "Relative path in absolute URI:${system:java.io.tmpdir%7D/$%7Bsystem:user.name%7D" -->
     <!-- 
-    <value>${system:java.io.tmpdir}/${system:user.name}</value>
+    <value>${system:java.io.tmpdir}/${user.name}</value>
      -->
     <value>/home/vagrant/hive/iotmp</value>
     <description>Location of Hive run time structured log file</description>
@@ -3977,7 +3977,7 @@
   </property>
   <property>
     <name>hive.server2.logging.operation.log.location</name>
-    <value>/home/vagrant/hive/iotmp/${system:user.name}/operation_logs</value>
+    <value>/home/vagrant/hive/iotmp/${user.name}/operation_logs</value>
     <description>Top level directory where operation logs are stored if logging functionality is enabled</description>
   </property>
   <property>

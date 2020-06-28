@@ -1,5 +1,17 @@
 # Hive 远程模式的安装
 
+#### JDK version info
+
+```sh
+[root@hdp-node-01 vagrant]# cd jdk/bin/
+[root@hdp-node-01 bin]# ./java -version
+java version "1.7.0_80"
+Java(TM) SE Runtime Environment (build 1.7.0_80-b15)
+Java HotSpot(TM) 64-Bit Server VM (build 24.80-b11, mixed mode)
+```
+
+
+
 #### 下载压Hive 
 
 使用 release 2.3.7 （最新版）
@@ -954,11 +966,55 @@ hive
 hive> create database test;
 ```
 
+#### [其他验证操作](https://www.cnblogs.com/xibuhaohao/p/11772481.html)
+
+```
+一系列操作
+
+hive> create database hdb;
+
+hive> show databases;
+
+hive> use hdb;
+
+hive> show tables;
+
+hive> insert into htest values("xiaoxu","20");
+
+hive> select * from htest;
+OK
+xiaoxu  20
+
+再次查看则data有数据了
+```
+
+
+
 #### 界面查看hdfs文件
 
 菜单：Utilities/Browse Directory
 
 http://192.168.33.101:50070/explorer.html#/user/hive/warehouse
+
+
+
+#### hive的web 接口： can't find hwi any more.
+
+#### **[启动hiveservice2服务](https://www.cnblogs.com/lenmom/p/10214001.html)** -- 新的Web服务
+
+http://192.168.33.101:10002/
+
+Hive以提供Thrift服务的服务器形式来运行，可以允许许多个不同语言编写的客户端进行通信，使用需要启动HiveServer服务以和客户端联系，我们可以通过设置HIVE_PORT环境变量来设置服务器所监听的端口，在默认情况下，端口号为10000，这个可以通过以下方式来启动Hiverserver：
+
+   bin/hive --service hiveserver2 -p 10002
+
+其中-p参数也是用来指定监听端口的，启动后，用java，python等编程语言可以通过jdbc等驱动的访问hive的服务了，适合编程模式。HiveServer2支持多客户端的并发和认证，为开放API客户端如JDBC、ODBC提供更好的支持。
+
+```
+hiveserver2 
+#或者
+hive --service hiveserver2 & #最后的&表示在后台运行 thrift端口号默认为10000， web http://{hive server ip address}:10002/ 访问
+```
 
 
 
@@ -968,3 +1024,4 @@ http://192.168.33.101:50070/explorer.html#/user/hive/warehouse
 
 * https://blog.csdn.net/danykk/article/details/80137223
 * https://www.cnblogs.com/koiiok/p/12984788.html
+* [Hive学习之路 （四）Hive的连接3种连接方式](https://www.cnblogs.com/qingyunzong/p/8715925.html)

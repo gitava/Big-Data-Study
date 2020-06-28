@@ -946,15 +946,19 @@ modify hive-site.xml
 
 replace all occurrences of ${system:java.io.tmpdir} with /home/vagrant/hive/iotmp and also create this folder manually.
 
-#### 启动hive
+#### 启动hive客户端
 
+```sh
+hive
+#创建测试库
+hive> create database test;
+```
 
+#### 界面查看hdfs文件
 
+菜单：Utilities/Browse Directory
 
-
-
-
-
+http://192.168.33.101:50070/explorer.html#/user/hive/warehouse
 
 
 
@@ -963,4 +967,4 @@ replace all occurrences of ${system:java.io.tmpdir} with /home/vagrant/hive/iotm
 ### References
 
 * https://blog.csdn.net/danykk/article/details/80137223
-* 
+* https://www.cnblogs.com/koiiok/p/12984788.html

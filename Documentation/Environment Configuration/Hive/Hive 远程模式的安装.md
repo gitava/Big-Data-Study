@@ -897,6 +897,33 @@ sudo $HADOOP_HOME/sbin/start-yarn.sh
 sudo $HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver
 ```
 
+## [初始化元数据库](https://www.cnblogs.com/koiiok/p/12984788.html)
+
+```sh
+schematool -dbType mysql -initSchema
+```
+
+```sh
+[vagrant@hdp-node-01 ~]$ schematool -dbType mysql -initSchema
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/home/vagrant/apache-hive-2.3.7-bin/lib/log4j-slf4j-impl-2.6.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/home/vagrant/hadoop/share/hadoop/common/lib/slf4j-log4j12-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Metastore connection URL:	 jdbc:mysql://192.168.33.102:3306/hive?createDatabaseIfNotExist=true
+Metastore Connection Driver :	 com.mysql.jdbc.Driver
+Metastore connection User:	 hive
+Sun Jun 28 06:07:53 UTC 2020 WARN: Establishing SSL connection without server's identity verification is not recommended. According to MySQL 5.5.45+, 5.6.26+ and 5.7.6+ requirements SSL connection must be established by default if explicit option isn't set. For compliance with existing applications not using SSL the verifyServerCertificate property is set to 'false'. You need either to explicitly disable SSL by setting useSSL=false, or set useSSL=true and provide truststore for server certificate verification.
+Starting metastore schema initialization to 2.3.0
+Initialization script hive-schema-2.3.0.mysql.sql
+Sun Jun 28 06:07:54 UTC 2020 WARN: Establishing SSL connection without server's identity verification is not recommended. According to MySQL 5.5.45+, 5.6.26+ and 5.7.6+ requirements SSL connection must be established by default if explicit option isn't set. For compliance with existing applications not using SSL the verifyServerCertificate property is set to 'false'. You need either to explicitly disable SSL by setting useSSL=false, or set useSSL=true and provide truststore for server certificate verification.
+Initialization script completed
+Sun Jun 28 06:07:56 UTC 2020 WARN: Establishing SSL connection without server's identity verification is not recommended. According to MySQL 5.5.45+, 5.6.26+ and 5.7.6+ requirements SSL connection must be established by default if explicit option isn't set. For compliance with existing applications not using SSL the verifyServerCertificate property is set to 'false'. You need either to explicitly disable SSL by setting useSSL=false, or set useSSL=true and provide truststore for server certificate verification.
+schemaTool completed
+```
+
+
+
 #### 启动metastore
 
 ```shell
@@ -905,11 +932,21 @@ hive --service metastore & #程序在后台进行
 
 
 
+#### 启动hiveserver???
+
+```
+hive --service hiveserver & #程序在后台进行
+```
 
 
 
+#### Update hive-site.xml
 
+modify hive-site.xml
 
+replace all occurrences of ${system:java.io.tmpdir} with /home/vagrant/hive/iotmp and also create this folder manually.
+
+#### 启动hive
 
 
 

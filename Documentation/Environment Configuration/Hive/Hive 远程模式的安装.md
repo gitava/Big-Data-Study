@@ -865,35 +865,17 @@ Empty set (0.00 sec)
 
 #### 安装JDBC包 [ref: #11]
 
-https://static.runoob.com/download/mysql-connector-java-8.0.16.jar
+Version: 5.1.49
+
+https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.49/mysql-connector-java-5.1.49.jar
 
 ```shell
-sudo yum install mysql-connector-java
-...
-
-[vagrant@hdp-node-01 ~]$ rpm -ql mysql-connector-java.noarch 1:5.1.25-3.el7
-/usr/share/doc/mysql-connector-java-5.1.25
-/usr/share/doc/mysql-connector-java-5.1.25/CHANGES
-/usr/share/doc/mysql-connector-java-5.1.25/COPYING
-/usr/share/doc/mysql-connector-java-5.1.25/docs
-/usr/share/doc/mysql-connector-java-5.1.25/docs/README.txt
-/usr/share/doc/mysql-connector-java-5.1.25/docs/connector-j.html
-/usr/share/doc/mysql-connector-java-5.1.25/docs/connector-j.pdf
-/usr/share/java/mysql-connector-java.jar
-/usr/share/maven-fragments/mysql-connector-java
-/usr/share/maven-poms/JPP-mysql-connector-java.pom
-package 1:5.1.25-3.el7 is not installed
-
-[vagrant@hdp-node-01 ~]$ cd hive/lib
-[vagrant@hdp-node-01 lib]$ ls -l mysql*
--rw-r--r--. 1 vagrant vagrant    7954 Feb 13  2017 mysql-metadata-storage-0.9.2.jar
-
-[vagrant@hdp-node-01 lib]$ ln -s /usr/share/java/mysql-connector-java.jar .
-
-[vagrant@hdp-node-01 lib]$ ls -l mysql*
-...
-lrwxrwxrwx. 1 vagrant vagrant      40 Jun 28 03:46 mysql-connector-java.jar -> /usr/share/java/mysql-connector-java.jar
-
+[vagrant@hdp-node-01 ~]$ mv mysql-connector-java-* MySQLJDBC/
+[vagrant@hdp-node-01 ~]$ cd /home/vagrant/hive/lib
+[vagrant@hdp-node-01 lib]$ ln -s /home/vagrant/MySQLJDBC/mysql-connector-java-5.1.49.jar mysql-connector-java.jar
+[vagrant@hdp-node-01 lib]$ ll mysql-*
+lrwxrwxrwx. 1 vagrant vagrant   55 Jun 28 06:04 mysql-connector-java.jar -> /home/vagrant/MySQLJDBC/mysql-connector-java-5.1.49.jar
+-rw-r--r--. 1 vagrant vagrant 7954 Feb 13  2017 mysql-metadata-storage-0.9.2.jar
 ```
 
 #### 启动hive前的准备

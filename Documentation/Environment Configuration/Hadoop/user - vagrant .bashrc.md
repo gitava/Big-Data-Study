@@ -20,11 +20,8 @@ export HIVE_HOME=/home/vagrant/hive
 
 PATH=/home/vagrant/hadoop/bin/:$JAVA_HOME/bin:$JAVA_HOME/jre/bin:$HOME/pig/bin:$HIVE_HOME/bin:$PATH
 
-# add the following one to run jps under openjdk
-# alias jps='/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.252.b09-2.el7_8.x86_64/bin/jps'
-
 # Add PIG_CLASSPATH for pig installation
 export PIG_CLASSPATH=/home/vagrant/hadoop/etc/hadoop
 export PIG_USER_CLASSPATH_FIRST=/home/vagrant/pig/lib
-export CLASSPATH=$JAVA_HOME/lib:$JAVA_HOME/jre/lib:$HIVE_HOME/lib:$CLASSPATH
+export CLASSPATH=$JAVA_HOME/lib:$JAVA_HOME/jre/lib:/home/vagrant/hadoop/lib:/home/vagrant/share/hadoop:$HIVE_HOME/lib:$CLASSPATH
 ```

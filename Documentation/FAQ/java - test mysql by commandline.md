@@ -23,7 +23,10 @@ public class JDBCTest {
 }
 
 /*
-export CLASSPATH=$CLASSPATH%:/home/vagrant/hive/lib/mysql-connector-java.jar
+export CLASSPATH=$CLASSPATH:/home/vagrant/hive/lib/mysql-connector-java.jar:/home/vagrant
+#if the current folder is /home/vagrant,then this folder needs to be part of the CLASSPATH,
+# otherwise, java won't be able to find the compiled class file.
+cd /home/vagrant
 javac -d . JDBCTest.java
 java JDBCTest  -classpath $CLASSPATH 
 */

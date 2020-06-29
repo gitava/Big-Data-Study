@@ -1,7 +1,15 @@
+This is the one to be used for the first time provision.
+
+Usage:
+
+* copy the following info into a Vagrant file.
+* run vagrant command as described orginally.
+
+```shell
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Version: Vagrantfile_after_ini
+# Version: Vagrantfile_ini
 
 #
 #this is for building master
@@ -68,8 +76,8 @@ SCRIPT
 
 
 Vagrant.configure("2") do |config|
-		# change to 3 servers from 4 to save machine resources. 
-		(1..3).each do |i|
+
+		(1..4).each do |i|
 		config.vm.define "hdp#{i}" do |node|
 	
 		# 设置虚拟机的Box
@@ -79,14 +87,11 @@ Vagrant.configure("2") do |config|
 		# 设置虚拟机的IP
 		node.vm.network "private_network", ip: "192.168.33.#{100+i}"
 
-		# 设置主机与虚拟机的共享目录 - this needs " VirtualBox Guest Additions"
-		# don't use this by default now.
-		# node.vm.synced_folder "./", "/home/vagrant/share"
+		# 设置主机与虚拟机的共享目录
+		#node.vm.synced_folder "~/Desktop/share", "/home/vagrant/share"
 		# 复制相应的依赖文件
-
-		#packages are disabled for the run after initial setup
-		#config.vm.provision "file", source: "./jdk-7u80-linux-x64.tar", destination: "/home/vagrant/jdk-7u80-linux-x64.tar"
-		#config.vm.provision "file", source: "./hadoop-2.9.2.tar.gz", destination: "/home/vagrant/hadoop-2.9.2.tar.gz"
+		config.vm.provision "file", source: "./jdk-7u80-linux-x64.tar", destination: "/home/vagrant/jdk-7u80-linux-x64.tar"
+		config.vm.provision "file", source: "./hadoop-2.9.2.tar.gz", destination: "/home/vagrant/hadoop-2.9.2.tar.gz"
 		config.vm.provision "file", source: "./sshd/sshd_config", destination: "/home/vagrant/sshd_config"
 		config.vm.provision "file", source: "./conf", destination: "/home/vagrant/env"
 		config.vm.provision "file", source: "./test", destination: "/home/vagrant/test"
@@ -104,3 +109,6 @@ Vagrant.configure("2") do |config|
 		end
 	end
 end
+
+```
+

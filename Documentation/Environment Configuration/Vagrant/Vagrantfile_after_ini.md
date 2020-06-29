@@ -1,3 +1,8 @@
+This is the version used after intial run of vagrant. It's the one used to run the environment most of the time.
+
+
+
+```shell
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
@@ -104,3 +109,5 @@ Vagrant.configure("2") do |config|
 		end
 	end
 end
+```
+

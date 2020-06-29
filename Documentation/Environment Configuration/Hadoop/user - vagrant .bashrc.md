@@ -23,5 +23,5 @@ PATH=/home/vagrant/hadoop/bin/:$JAVA_HOME/bin:$JAVA_HOME/jre/bin:$HOME/pig/bin:$
 # Add PIG_CLASSPATH for pig installation
 export PIG_CLASSPATH=/home/vagrant/hadoop/etc/hadoop
 export PIG_USER_CLASSPATH_FIRST=/home/vagrant/pig/lib
-export CLASSPATH=$JAVA_HOME/lib:$JAVA_HOME/jre/lib:/home/vagrant/hadoop/lib:/home/vagrant/share/hadoop:$HIVE_HOME/lib:$CLASSPATH
+export CLASSPATH=$JAVA_HOME/lib:$JAVA_HOME/jre/lib:/home/vagrant/hadoop/lib:/home/vagrant/hadoop/share/hadoop:$HIVE_HOME/lib:$CLASSPATH
 ```

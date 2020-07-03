@@ -288,11 +288,11 @@ slave节点复查进程
 2205 NodeManager
 2381 HQuorumPeer
 
-[vagrant@hdp-node-02 ~/hbase]$sudo jps
-3829 HQuorumPeer
-4117 Jps
-2086 DataNode
-2199 NodeManager
+[vagrant@hdp-node-03 ~/hbase]$sudo jps
+2113 DataNode
+6241 Jps
+5720 HRegionServer
+5595 HQuorumPeer
 ```
 
 #### hbase shell

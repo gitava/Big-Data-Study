@@ -29,6 +29,11 @@
 		-->
 		<value>hdfs://hdp-node-01:9000/hbase</value>
 	</property>
+	<!-- setup web interface port -->
+	<property>
+        <name>hbase.master.info.port</name>
+        <value>60010</value>
+ 	</property>
 	<property>
     <!-- HBase 必须的配置 -->
     <!--
@@ -37,7 +42,7 @@
 		<name>hbase.cluster.distributed</name>
 		<value>true</value>
 	</property>
-	<!-- ref #35 for more details. -->
+	<!-- ref Git #35 for more details. -->
 	<property>
         <name>hbase.unsafe.stream.capability.enforce</name>
         <value>false</value>

@@ -37,6 +37,11 @@
 		<name>hbase.cluster.distributed</name>
 		<value>true</value>
 	</property>
+	<!-- ref #35 for more details. -->
+	<property>
+        <name>hbase.unsafe.stream.capability.enforce</name>
+        <value>false</value>
+    </property>
 	<property>
     <!-- 临时文件目录 - 本地系统目录里 -->
 		<name>hbase.tmp.dir</name>

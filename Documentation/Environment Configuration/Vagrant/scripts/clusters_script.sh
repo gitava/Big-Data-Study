@@ -3,6 +3,7 @@
 # at /home/vagrant
 
 #---hosts---
+# this should be put onto all servers.
 # To work with eclipse-hadoop-plugin,
 # needs to comment-out 127.0.0.1 part on hdp-node-01
 # will edit this file later to add it.
@@ -24,13 +25,14 @@ export PATH=$PATH/:/home/vagrant/hadoop/bin/:$JAVA_HOME/bin
 EOF
 source /root/.bashrc
 
-cat >> .bashrc <<EOF
-export HADOOP_HOME=/home/vagrant/hadoop
-export JAVA_HOME=/home/vagrant/jdk
-#add Java bin to environment
-export PATH=$PATH:/home/vagrant/hadoop/bin/:$JAVA_HOME/bin
-EOF
-source .bashrc
+# .bashrc will be copied and replaced from the conf folder to vagrant home directly
+# cat >> .bashrc <<EOF
+# export HADOOP_HOME=/home/vagrant/hadoop
+# export JAVA_HOME=/home/vagrant/jdk
+# #add Java bin to environment
+# export PATH=$PATH:/home/vagrant/hadoop/bin/:$JAVA_HOME/bin
+# EOF
+# source .bashrc
 
 
 #---hadoop---

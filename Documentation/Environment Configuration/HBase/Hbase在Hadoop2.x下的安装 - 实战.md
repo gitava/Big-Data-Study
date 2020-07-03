@@ -5,7 +5,30 @@
 
 #### 前提条件
 
-* 3个server的无密码SSH配置
+* 确保3个server的/etc/hosts部分要注释掉, 如下：
+
+```shell
+#127.0.0.1	hdp-node-01	hdp-node-01
+#127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+192.168.33.101  hdp-node-01
+192.168.33.102  hdp-node-02
+192.168.33.103  hdp-node-03
+192.168.33.104  hdp-node-04
+```
+
+
+
+* 3个server的免密码SSH配置
+
+* 配置3个server时间同步 【目前不知道其必要性】
+
+```shell
+sudo ntpdate  0.cn.pool.ntp.org
+
+3 Jul 01:58:20 ntpdate[2364]: adjust time server 94.237.64.20 offset -0.026839 sec
+```
 
 
 
@@ -27,8 +50,6 @@ cp -R hbase-1.6.0 ~/
 cd ~/
 ln -s hbase-1.6.0 hbase
 ```
-
-
 
 #### 复查Java及hadoop版本
 
@@ -81,54 +102,7 @@ From source with checksum 3a9939967262218aa556c684d107985
 This command was run using /home/vagrant/hadoop/share/hadoop/common/hadoop-common-2.9.2.jar
 ```
 
-
-
-#### 覆盖hadoop相关的jar包 -- [或许不必要，目前restore到2.8.5原装jar]
-
-注意：
-
-由于HBase 依赖Hadoop，在分布式模式下，Hadoop版本必须和HBase下的版本一致。用你运行的分布式Hadoop版本jar文件替换HBase lib目录下的Hadoop jar文件，以避免版本不匹配问题，也可以根据情况自己编译发布包。
-
-所有的hadoop包, 以下所有包都要替换：
-
-```sh
-[vagrant@hdp-node-01 ~/hbase/lib]$ls -ltr hadoop-*
--rw-r--r--. 1 vagrant vagrant 1572117 Jul  2 04:38 hadoop-mapreduce-client-core-2.8.5.jar
--rw-r--r--. 1 vagrant vagrant 2454120 Jul  2 04:38 hadoop-yarn-api-2.8.5.jar
--rw-r--r--. 1 vagrant vagrant 3990042 Jul  2 04:38 hadoop-common-2.8.5.jar
--rw-r--r--. 1 vagrant vagrant   29917 Jul  2 04:38 hadoop-client-2.8.5.jar
--rw-r--r--. 1 vagrant vagrant  565322 Jul  2 04:38 hadoop-mapreduce-client-app-2.8.5.jar
--rw-r--r--. 1 vagrant vagrant  123295 Jul  2 04:38 hadoop-auth-2.8.5.jar
--rw-r--r--. 1 vagrant vagrant  230260 Jul  2 04:38 hadoop-yarn-client-2.8.5.jar
--rw-r--r--. 1 vagrant vagrant 4857023 Jul  2 04:38 hadoop-hdfs-2.8.5.jar
--rw-r--r--. 1 vagrant vagrant  491884 Jul  2 04:38 hadoop-yarn-server-common-2.8.5.jar
--rw-r--r--. 1 vagrant vagrant   45930 Jul  2 04:38 hadoop-annotations-2.8.5.jar
--rw-r--r--. 1 vagrant vagrant   67002 Jul  2 04:38 hadoop-mapreduce-client-jobclient-2.8.5.jar
--rw-r--r--. 1 vagrant vagrant 4093994 Jul  2 04:38 hadoop-hdfs-client-2.8.5.jar
--rw-r--r--. 1 vagrant vagrant  896693 Jul  2 04:38 hadoop-yarn-server-nodemanager-2.8.5.jar
--rw-r--r--. 1 vagrant vagrant  785846 Jul  2 04:38 hadoop-mapreduce-client-common-2.8.5.jar
--rw-r--r--. 1 vagrant vagrant   76092 Jul  2 04:38 hadoop-mapreduce-client-shuffle-2.8.5.jar
--rw-r--r--. 1 vagrant vagrant 1806509 Jul  2 04:38 hadoop-yarn-common-2.8.5.jar
-```
-
-
-
-查找转移jar包文件
-
-``````sh
-cd ~/hbase/lib
-
-vi f.sh
-
-find -name "hadoop*jar"|sed 's/2.8.5/2.9.2/g'|sed 's/.\///g' > f.log
-rm ./hadoop*jar
-
-cat ./f.log|while read line
-do
-find /home/vagrant/hadoop -name "$line"|xargs -i cp {} ./
-done
-rm ./f.log
-``````
+#### 覆盖hadoop相关的jar包
 
 还有lib目录下有个**slf4j-log4j12-XXX.jar**，在机器有装hadoop时，由于classpath中会有hadoop中的这个jar包，会有冲突，直接删除掉，没有就不用删除了。
 
@@ -136,7 +110,7 @@ rm ./f.log
 rm ~/hbase/lib/slf4j-log4j12-1.7.25.jar
 ```
 
-
+其他的不动。
 
 #### 配置环境变量
 
@@ -145,11 +119,9 @@ rm ~/hbase/lib/slf4j-log4j12-1.7.25.jar
 ```sh
 # ～/.bashrc
 export HBASE_HOME=/home/vagrant/hbase
-
+export CLASSPATH=$HBASE_HOME/lib:$CLASSPATH
 export PATH=$HBASE_HOME/bin:$PATH
 ```
-
-
 
 #### 修改配置文件：hbase-env.sh
 
@@ -214,6 +186,11 @@ drwxr-xr-x   - vagrant   supergroup          0 2020-07-02 06:05 /hbase
 		-->
 		<value>hdfs://hdp-node-01:9000/hbase</value>
 	</property>
+	<!-- setup web interface port -->
+	<property>
+        <name>hbase.master.info.port</name>
+        <value>60010</value>
+ 	</property>
 	<property>
     <!-- HBase 必须的配置 -->
     <!--
@@ -222,6 +199,11 @@ drwxr-xr-x   - vagrant   supergroup          0 2020-07-02 06:05 /hbase
 		<name>hbase.cluster.distributed</name>
 		<value>true</value>
 	</property>
+	<!-- ref Git #35 for more details. -->
+	<property>
+        <name>hbase.unsafe.stream.capability.enforce</name>
+        <value>false</value>
+    </property>
 	<property>
     <!-- 临时文件目录 - 本地系统目录里 -->
 		<name>hbase.tmp.dir</name>
@@ -268,28 +250,20 @@ scp -r hbase hdp-node-03:/home/vagrant
 
 如果是HBase自带的，那就不用单独启动了。
 
-```
-sudo ~/hbase/bin/start-hbase.sh
+```shell
+~/hbase/bin/start-hbase.sh
 ```
 
-````shell
-#sudo
-# this one start more services
-[vagrant@hdp-node-01 ~]$sudo ~/hbase/bin/start-hbase.sh
-SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
-SLF4J: Defaulting to no-operation (NOP) logger implementation
-SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
-SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
-SLF4J: Defaulting to no-operation (NOP) logger implementation
-SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
-hdp-node-03: running zookeeper, logging to /home/vagrant/hbase/bin/../logs/hbase-root-zookeeper-hdp-node-03.out
-hdp-node-02: running zookeeper, logging to /home/vagrant/hbase/bin/../logs/hbase-root-zookeeper-hdp-node-02.out
-hdp-node-01: running zookeeper, logging to /home/vagrant/hbase/bin/../logs/hbase-root-zookeeper-hdp-node-01.out
-running master, logging to /home/vagrant/hbase/bin/../logs/hbase-root-master-hdp-node-01.out
-hdp-node-03: running regionserver, logging to /home/vagrant/hbase/bin/../logs/hbase-root-regionserver-hdp-node-03.out
-hdp-node-02: running regionserver, logging to /home/vagrant/hbase/bin/../logs/hbase-root-regionserver-hdp-node-02.out
-hdp-node-01: running regionserver, logging to /home/vagrant/hbase/bin/../logs/hbase-root-regionserver-hdp-node-01.out
-````
+```shell
+[vagrant@hdp-node-01 ~/hbase/logs]$~/hbase/bin/start-hbase.sh
+hdp-node-03: running zookeeper, logging to /home/vagrant/hbase/logs/hbase-vagrant-zookeeper-hdp-node-03.out
+hdp-node-02: running zookeeper, logging to /home/vagrant/hbase/logs/hbase-vagrant-zookeeper-hdp-node-02.out
+hdp-node-01: running zookeeper, logging to /home/vagrant/hbase/logs/hbase-vagrant-zookeeper-hdp-node-01.out
+running master, logging to /home/vagrant/hbase/logs/hbase-vagrant-master-hdp-node-01.out
+hdp-node-02: running regionserver, logging to /home/vagrant/hbase/logs/hbase-vagrant-regionserver-hdp-node-02.out
+hdp-node-03: running regionserver, logging to /home/vagrant/hbase/logs/hbase-vagrant-regionserver-hdp-node-03.out
+hdp-node-01: running regionserver, logging to /home/vagrant/hbase/logs/hbase-vagrant-regionserver-hdp-node-01.out
+```
 
 以上命令会自动启动zookeeper。
 
@@ -341,17 +315,25 @@ hbase(main):001:0>
 
 #### 基本测试
 
-``
 
-```
+
+```sh
 hbase> list
 
 hbase(main):003:0> create 't2',{NAME=>'f1'}
+
+hbase(main):002:0> disable 't2'
+0 row(s) in 2.4050 seconds
+
+hbase(main):003:0> drop 't2'
+0 row(s) in 1.2950 seconds
+
+hbase(main):004:0> list
+TABLE
+0 row(s) in 0.0120 seconds
+
+=> []
 ```
-
-
-
-<img src="img/image-20200630205003992.png" alt="image-20200630205003992" style="zoom:50%;" />
 
 #### 关闭hbase
 
@@ -359,11 +341,16 @@ hbase(main):003:0> create 't2',{NAME=>'f1'}
 stop-hbase.sh
 ```
 
-如果出现问题，无法关闭，可以查看log
-
-<img src="img/image-20200630205209001.png" alt="image-20200630205209001" style="zoom:50%;" />
+如果出现问题，无法关闭，可以查看log : /home/vagrant/hbase/logs
 
 #### web界面
 
-![image-20200630201224730](img/image-20200630201224730.png)
+http://192.168.33.101:60010/master-status
 
+![image-20200703122911361](img/image-20200703122911361.png)
+
+配置结束。
+
+
+
+如果想要方便一些， 就把Mac上的/etc/hosts加入3个server的dns 信息，这样web url就不用把host名转回ip才能用了。

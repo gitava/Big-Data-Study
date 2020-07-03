@@ -1,5 +1,11 @@
 https://community.cloudera.com/t5/Support-Questions/HBase-Region-in-Transition/td-p/26703
 
+try the one w/o sudo first
+
+```
+./bin/hbase hbck -repair
+```
+
 
 
 ```

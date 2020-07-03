@@ -5,3 +5,4 @@
 * 2020-07-02
   * setup Mac NFS file system
   * mount NFS to all vagrant servers
+  * setup passwordless ssh over 3 servers

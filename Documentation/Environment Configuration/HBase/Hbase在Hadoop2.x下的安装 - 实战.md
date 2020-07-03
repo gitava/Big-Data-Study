@@ -269,36 +269,40 @@ scp -r hbase hdp-node-03:/home/vagrant
 如果是HBase自带的，那就不用单独启动了。
 
 ```
-start-hbase.sh
+sudo ~/hbase/bin/start-hbase.sh
 ```
 
 ````shell
-[vagrant@hdp-node-01 ~]$start-hbase.sh
-
-hdp-node-03: running zookeeper, logging to /home/vagrant/hbase/logs/hbase-vagrant-zookeeper-hdp-node-03.out
-hdp-node-01: running zookeeper, logging to /home/vagrant/hbase/logs/hbase-vagrant-zookeeper-hdp-node-01.out
-hdp-node-02: running zookeeper, logging to /home/vagrant/hbase/logs/hbase-vagrant-zookeeper-hdp-node-02.out
-running master, logging to /home/vagrant/hbase/logs/hbase-vagrant-master-hdp-node-01.out
-hdp-node-03: running regionserver, logging to /home/vagrant/hbase/logs/hbase-vagrant-regionserver-hdp-node-03.out
-hdp-node-02: running regionserver, logging to /home/vagrant/hbase/logs/hbase-vagrant-regionserver-hdp-node-02.out
-hdp-node-01: running regionserver, logging to /home/vagrant/hbase/logs/hbase-vagrant-regionserver-hdp-node-01.out
+#sudo
+# this one start more services
+[vagrant@hdp-node-01 ~]$sudo ~/hbase/bin/start-hbase.sh
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+hdp-node-03: running zookeeper, logging to /home/vagrant/hbase/bin/../logs/hbase-root-zookeeper-hdp-node-03.out
+hdp-node-02: running zookeeper, logging to /home/vagrant/hbase/bin/../logs/hbase-root-zookeeper-hdp-node-02.out
+hdp-node-01: running zookeeper, logging to /home/vagrant/hbase/bin/../logs/hbase-root-zookeeper-hdp-node-01.out
+running master, logging to /home/vagrant/hbase/bin/../logs/hbase-root-master-hdp-node-01.out
+hdp-node-03: running regionserver, logging to /home/vagrant/hbase/bin/../logs/hbase-root-regionserver-hdp-node-03.out
+hdp-node-02: running regionserver, logging to /home/vagrant/hbase/bin/../logs/hbase-root-regionserver-hdp-node-02.out
+hdp-node-01: running regionserver, logging to /home/vagrant/hbase/bin/../logs/hbase-root-regionserver-hdp-node-01.out
 ````
 
 以上命令会自动启动zookeeper。
 
 ```shell
 [vagrant@hdp-node-01 ~]$sudo jps
-
-3649 HRegionServer
-2338 DataNode
-3507 HMaster
-2789 NodeManager
-2198 NameNode
-3751 Jps
-3048 JobHistoryServer
-2666 ResourceManager
-2508 SecondaryNameNode
-3407 HQuorumPeer
+6896 HQuorumPeer
+2195 NameNode
+2788 NodeManager
+2663 ResourceManager
+2505 SecondaryNameNode
+7451 Jps
+2335 DataNode
+2959 JobHistoryServer
 ```
 
 slave节点复查进程
@@ -310,10 +314,10 @@ slave节点复查进程
 2205 NodeManager
 2381 HQuorumPeer
 
-[vagrant@hdp-node-03 ~]$sudo jps
-2374 -- process information unavailable
+[vagrant@hdp-node-02 ~/hbase]$sudo jps
+3829 HQuorumPeer
+4117 Jps
 2086 DataNode
-2676 Jps
 2199 NodeManager
 ```
 
@@ -323,11 +327,29 @@ slave节点复查进程
 hbase shell
 ```
 
-![image-20200630201200243](img/image-20200630201200243.png)
+````
+[vagrant@hdp-node-01 ~]$hbase shell
+HBase Shell
+Use "help" to get list of supported commands.
+Use "exit" to quit this interactive shell.
+Version 1.6.0, r5ec5a5b115ee36fb28903667c008218abd21b3f5, Fri Feb 14 12:00:03 PST 2020
+
+hbase(main):001:0>
+````
+
+
 
 #### 基本测试
 
-![image-20200630201207501](img/image-20200630201207501.png)
+``
+
+```
+hbase> list
+
+hbase(main):003:0> create 't2',{NAME=>'f1'}
+```
+
+
 
 <img src="img/image-20200630205003992.png" alt="image-20200630205003992" style="zoom:50%;" />
 

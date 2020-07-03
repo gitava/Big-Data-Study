@@ -1,0 +1,1 @@
+running zookeeper, logging to /home/vagrant/hbase/bin/../logs/hbase-vagrant-zookeeper-hdp-node-02.out
